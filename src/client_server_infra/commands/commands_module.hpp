@@ -5,5 +5,6 @@
 #include "command.hpp"
 #include "command_create.hpp"
 #include "command_exec.hpp"
+#include "serialization.hpp"
 
 #endif

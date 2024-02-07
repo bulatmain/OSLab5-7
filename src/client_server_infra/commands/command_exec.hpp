@@ -2,6 +2,7 @@
 #define COMMAND_EXEC_HPP
 
 #include <cinttypes>
+#include <iostream>
 #include <vector>
 
 #include "command.hpp"
@@ -13,7 +14,7 @@ namespace lab5_7 {
         std::vector<double> k;
 
     public:
-        CommandExec(uint16_t nodeId, std::vector<double> k)
+        CommandExec(uint16_t nodeId, std::vector<double> const& k)
              : nodeId(nodeId), k(k) {}
 
         CommandExec(uint16_t nodeId, std::vector<double>&& k)
@@ -26,21 +27,39 @@ namespace lab5_7 {
         CommandExec(uint16_t nodeId, Args... args) 
             : nodeId(nodeId), k({args...}) {}
 
+        virtual void print() const {
+            std::cout << this->serialize() << "\n"; 
+        }
+
         virtual CommandType identify() const {
             return CommandType::Exec;
         }
 
         virtual std::string serialize() const {
-            return std::move(serializeWithArguments(nodeId, k.size(), ));
+            std::string ser_cmd;
+            add_class_type(ser_cmd);
+            add_first_class_variable(ser_cmd, nodeId);
+            add_next_class_variable(ser_cmd, k.size());
+            for (auto const& k_i : k) {
+                add_next_class_variable(ser_cmd, k_i);
+            }
+            complete_serialization(ser_cmd);
+            return ser_cmd;
         } 
 
-        void add_class_type(std::string& ser_cmd) const {
-            ser_cmd += "Create";
+        virtual void add_class_type(std::string& ser_cmd) const {
+            ser_cmd += "Exec";
         }
 
-        virtual Command::cmd_ptr deserialize(std::string const& ser_cmd) const {
-            ser_cmd.at(0);
-            return std::make_shared<CommandCreate>(1, 2);
+        static Command::cmd_ptr deserialize(std::string const& ser_cmd) {
+            std::size_t pos = find_start_of_class_vars(ser_cmd);
+            uint16_t nodeId = getNextVar<uint16_t>(ser_cmd, pos);
+            uint64_t n = getNextVar<uint64_t>(ser_cmd, pos);
+            std::vector<double> k(n);
+            for (auto& k_i : k) {
+                k_i = getNextVar<double>(ser_cmd, pos);
+            }
+            return std::make_shared<CommandExec>(nodeId, std::move(k));
         }  
 
         virtual ~CommandExec() = default;
