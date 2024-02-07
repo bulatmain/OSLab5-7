@@ -2,7 +2,6 @@
 #define COMMAND_EXEC_HPP
 
 #include <cinttypes>
-#include <iostream>
 #include <vector>
 
 #include "command.hpp"
@@ -26,10 +25,6 @@ namespace lab5_7 {
         template <typename... Args>
         CommandExec(uint16_t nodeId, Args... args) 
             : nodeId(nodeId), k({args...}) {}
-
-        virtual void print() const {
-            std::cout << this->serialize() << "\n"; 
-        }
 
         virtual CommandType identify() const {
             return CommandType::Exec;

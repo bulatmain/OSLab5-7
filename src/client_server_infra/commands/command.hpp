@@ -1,6 +1,7 @@
 #ifndef COMMANDS_HPP
 #define COMMANDS_HPP
 
+#include <iostream>
 #include <string>
 #include <memory>
 
@@ -17,8 +18,9 @@ namespace lab5_7 {
         // String format: <CommandType as Command, CommandCreate, etc.>{class_variable_1, class_variable_2, ...}
         virtual std::string serialize() const = 0;
 
-
-        virtual void print() const {}
+        virtual void print() const {
+            std::cout << this->serialize() << "\n"; 
+        }
 
         virtual ~Command() = 0; 
 

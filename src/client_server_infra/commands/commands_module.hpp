@@ -5,6 +5,7 @@
 #include "command.hpp"
 #include "command_create.hpp"
 #include "command_exec.hpp"
+#include "command_print_tree.hpp"
 #include "serialization.hpp"
 
 #endif
