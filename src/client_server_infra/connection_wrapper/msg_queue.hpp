@@ -2,7 +2,13 @@
 #define MSG_QUEUE_HPP
 
 #include "concurrent_queue.hpp"
+#include "msg_convertions.hpp"
 #include "zmq.hpp"
+
+template <typename T>
+concept ConvertableToMsg = requires(T type) {
+    lab5_7::to_msg(type);
+};
 
 namespace lab5_7 {
     class MsgQueue {
@@ -16,19 +22,30 @@ namespace lab5_7 {
         MsgQueue() : que_ptr(std::make_shared<queue>()) {}
 
         void push(zmq::message_t&& msg) {
-            que_ptr->push(msg);
+            que_ptr->push(std::move(msg));
+        }
+
+        template <ConvertableToMsg T>
+        void push(T&& obj) {
+            que_ptr->push(to_msg(obj));
         }
 
         void clear() {
             que_ptr->clear();
         }
 
-        std::queue<zmq::message_t> copy_queue() const {
-            return que_ptr->copy_queue();
+        std::list<std::string> copy_msgs_content() const {
+            return que_ptr->map<std::string>(to_string);
         }
 
-        std::queue<zmq::message_t> unload() {
-            return que_ptr->unload();
+        std::list<std::string> copy_msgs_content() {
+            return const_cast<MsgQueue const*>(this)->copy_msgs_content();
+        }
+
+        std::list<std::string> unload() {
+            auto list = std::move(copy_msgs_content());
+            que_ptr->clear();
+            return list;
         }
 
     };
