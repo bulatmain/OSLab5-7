@@ -1,6 +1,7 @@
 #ifndef CONCURRENT_QUEUE_HPP
 #define CONCURRENT_QUEUE_HPP
 
+#include <functional>
 #include <queue>
 #include <list>
 #include <thread>
