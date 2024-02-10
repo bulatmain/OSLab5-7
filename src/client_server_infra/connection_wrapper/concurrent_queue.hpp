@@ -2,6 +2,7 @@
 #define CONCURRENT_QUEUE_HPP
 
 #include <queue>
+#include <list>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -24,14 +25,14 @@ class ConcurrentQueue {
 
         void push(T const& data) {
             std::unique_lock<std::mutex> lock(_mutex);
-            _queue.push(data);
+            _queue.emplace_back(data);
             lock.unlock();
             _condition.notify_one();
         }
 
         void push(T&& data) {
             std::unique_lock<std::mutex> lock(_mutex);
-            _queue.push(std::move(data));
+            _queue.emplace_back(std::move(data));
             lock.unlock();
             _condition.notify_one();
         }
@@ -42,7 +43,7 @@ class ConcurrentQueue {
 
         std::size_t size() {
             std::lock_guard<std::mutex> lock(_mutex);
-            return _queue.size();
+            return const_cast<ConcurrentQueue const*>(this)->size();
         }
 
         bool empty() {
@@ -50,14 +51,33 @@ class ConcurrentQueue {
             return _queue.empty();
         }
 
-        std::queue<T> copy_queue() const {
-            std::lock_guard<std::mutex> lock(_mutex);
+        std::list<T> copy_queue() const {
             return _queue;
         }
 
-        std::queue<T> unload() {
+        std::list<T> copy_queue() {
             std::lock_guard<std::mutex> lock(_mutex);
-            std::queue<T> blank;
+            return const_cast<ConcurrentQueue const*>(this)->copy_queue();
+        }
+
+        template <typename S>
+        std::list<S> map(std::function<S(T const&)> conversion) const {
+            std::list<S> converted;
+            for (auto const& each : _queue) {
+                converted.emplace_back(conversion(each));
+            }
+            return converted;
+        }
+
+        template <typename S>
+        std::list<S> map(std::function<S(T const&)> conversion) {
+            std::lock_guard<std::mutex> lock(_mutex);
+            return const_cast<ConcurrentQueue const*>(this)->map(conversion);
+        }
+
+        std::list<T> unload() {
+            std::lock_guard<std::mutex> lock(_mutex);
+            std::list<T> blank;
             std::swap(blank, _queue);
             return blank;
         }       
@@ -70,7 +90,7 @@ class ConcurrentQueue {
             }
 
             value = std::move(_queue.front());
-            _queue.pop();
+            _queue.pop_front();
             return true;
         }
 
@@ -82,7 +102,7 @@ class ConcurrentQueue {
             }
 
             value = std::move(_queue.front());
-            _queue.pop();
+            _queue.pop_front();
         }
 
         bool wait_and_pop_while(T& value,
@@ -100,12 +120,12 @@ class ConcurrentQueue {
             }
 
             value = std::move(_queue.front());
-            _queue.pop();
+            _queue.pop_front();
             return true;
         }
 
     private:
-        std::queue<T> _queue;
+        std::list<T> _queue;
         std::mutex _mutex;
         std::condition_variable _condition;
 };
