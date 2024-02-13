@@ -1,30 +1,19 @@
-#ifndef ONE_SOCKET_CONNECTION_HPP
-#define ONE_SOCKET_CONNECTION_HPP
+#ifndef CONNECTION_SOCKET_HPP
+#define CONNECTION_SOCKET_HPP
 
-#include "zmq_connection.hpp"
-#include "exceptions.hpp"
-
-#include "auxiliary_value_objects/value_objects.hpp"
+#include "one_socket_connection.hpp"
 
 namespace lab5_7 {
-    // TODO:
-    // Add recv and send zmq::result_t shared_ptr's
-    // send and recv methods now are void
-    // add method getResult() for send and recv methods
-    // add wait method with time and contidion overloads. 
-    class ConnectionSocket : public ZMQConnection {
+    class ConnectionSocket : public OneSocketConnection {
     protected:
-        zmq::socket_t socket;
-
         FlagVO is_connected;
-        EndpointVO endpoint;
 
     public:
         ConnectionSocket(zmq::socket_type sock_type, std::string const& endpoint)
-            : socket(context, sock_type), is_connected(false), endpoint(endpoint) {}
+            : OneSocketConnection(sock_type, endpoint), is_connected(false) {}
         
         ConnectionSocket(zmq::socket_type sock_type, std::string&& endpoint)
-            : socket(context, sock_type), is_connected(false), endpoint(std::move(endpoint)) {}
+            : OneSocketConnection(sock_type, std::move(endpoint)), is_connected(false) {}
 
         void connect() {
             if (is_connected) {
@@ -47,18 +36,7 @@ namespace lab5_7 {
             }
             is_connected.setValue(false);
         }
-
-        void changeEndpoint(std::string const& str) {
-            endpoint.setValue(str);
-        }
-
-        void changeEndpoint(std::string&& str) {
-            endpoint.setValue(std::move(str));
-        }
-
     };
-
-
 };
 
 #endif

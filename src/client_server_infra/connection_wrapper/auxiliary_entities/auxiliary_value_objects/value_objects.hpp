@@ -54,10 +54,12 @@ namespace lab5_7 {
 
         EndpointVO& operator=(EndpointVO const& other) {
             this->endpoint = other.endpoint;
+            return *this;
         }
 
         EndpointVO& operator=(EndpointVO&& other) {
             this->endpoint = std::move(endpoint);
+            return *this;
         }
 
         void setValue(std::string const& endpoint) {

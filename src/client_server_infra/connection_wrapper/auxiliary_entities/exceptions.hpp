@@ -29,16 +29,22 @@ namespace lab5_7 {
             : ConnectionException("Error: attempt to connect already connected socket") {}
     };
 
+    class AttemptToBindAlreadyConnectedSocketException : public ConnectionException {
+    public:
+        AttemptToBindAlreadyConnectedSocketException() noexcept
+            : ConnectionException("Error: attempt to bind already connected socket") {}
+    };
+
     class AttemptToDisconnectNotConnectedSocketException : public ConnectionException {
     public:
         AttemptToDisconnectNotConnectedSocketException() noexcept
             : ConnectionException("Error: attempt to disconnect not connected socket") {}
     };
 
-    class AttemptToSendMsgWithNotConnectedSocket : public ConnectionException {
+    class AttemptToSendMsgWithNotConnectedSocketException : public ConnectionException {
     public:
-        AttemptToSendMsgWithNotConnectedSocket() noexcept
-            : ConnectionException("Error: socket is not connected") {}
+        AttemptToSendMsgWithNotConnectedSocketException() noexcept
+            : ConnectionException("Error: attempt to send message with not connected socket") {}
     };
 
     class UnableToSendMsgInNonBlockingModeException : public ConnectionException {
