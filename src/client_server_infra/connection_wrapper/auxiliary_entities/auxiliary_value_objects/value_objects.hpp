@@ -58,7 +58,7 @@ namespace lab5_7 {
         }
 
         EndpointVO& operator=(EndpointVO&& other) {
-            this->endpoint = std::move(endpoint);
+            this->endpoint = std::move(other.endpoint);
             return *this;
         }
 
