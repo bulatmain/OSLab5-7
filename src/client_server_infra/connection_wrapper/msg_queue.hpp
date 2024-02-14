@@ -3,6 +3,7 @@
 
 #include "concurrent_queue.hpp"
 #include "msg_convertions.hpp"
+#include "msg_queue_exceptions.hpp"
 #include "zmq.hpp"
 
 template <typename T>
@@ -20,15 +21,6 @@ namespace lab5_7 {
 
     public:
         MsgQueue() : que_ptr(std::make_shared<queue>()) {}
-
-        void push(zmq::message_t&& msg) {
-            que_ptr->push(std::move(msg));
-        }
-
-        template <ConvertableToMsg T>
-        void push(T&& obj) {
-            que_ptr->push(to_msg(obj));
-        }
 
         void clear() {
             que_ptr->clear();
