@@ -1,8 +1,7 @@
 #ifndef CONNECTION_MODULE_HPP
 #define CONNECTION_MODULE_HPP
 
-#include "msg_queue.hpp"
-#include "req_queue.hpp"
-
+#include "request_queue.hpp"
+#include "responce_queue.hpp"
 
 #endif
