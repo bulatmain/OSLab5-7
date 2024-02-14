@@ -2,7 +2,7 @@
 #define ONE_SOCKET_CONNECTION_HPP
 
 #include "zmq_connection.hpp"
-#include "exceptions.hpp"
+#include "connection_exceptions.hpp"
 
 #include "auxiliary_value_objects/value_objects.hpp"
 
