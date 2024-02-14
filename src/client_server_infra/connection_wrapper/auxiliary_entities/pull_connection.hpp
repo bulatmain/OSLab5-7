@@ -13,15 +13,23 @@ namespace lab5_7 {
             : BindSocket(zmq::socket_type::pull, std::move(endpoint)) {}
 
         void pull(zmq::message_t& msg) {
-            recv(msg); 
+            if (!is_binded) {
+                throw AttemptToRecvMsgWithNotBindedSocketException();
+            } else {
+                recv(msg); 
+            }
         }
 
         void pullDontWait(zmq::message_t& msg) {
-            recv(msg, zmq::recv_flags::dontwait);
+            if (!is_binded) {
+                throw AttemptToRecvMsgWithNotBindedSocketException();
+            } else {
+                recv(msg, zmq::recv_flags::dontwait);
+            }
         }
 
         recv_res_ptr getPullResult() {
-            return std::move(send_res);
+            return std::move(recv_res);
         }
 
     };

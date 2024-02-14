@@ -13,15 +13,27 @@ namespace lab5_7 {
             : ConnectionSocket(zmq::socket_type::push, std::move(endpoint)) {}
 
         void push(zmq::message_t& msg) {
-            send(msg);    
+            if (!is_connected) {
+                throw AttemptToSendMsgWithNotConnectedSocketException();
+            } else {
+                send(msg);
+            }
         }
 
         void pushDontWait(zmq::message_t& msg) {
-            send(msg, zmq::send_flags::dontwait);
+            if (!is_connected) {
+                throw AttemptToSendMsgWithNotConnectedSocketException();
+            } else {
+                send(msg, zmq::send_flags::dontwait);
+            }
         }
 
         void pushSendMore(zmq::message_t& msg) {
-            send(msg, zmq::send_flags::sndmore);
+            if (!is_connected) {
+                throw AttemptToSendMsgWithNotConnectedSocketException();
+            } else {
+                send(msg, zmq::send_flags::sndmore);
+            }
         }
 
         send_res_ptr getPushResult() {
