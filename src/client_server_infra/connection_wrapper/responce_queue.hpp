@@ -36,10 +36,11 @@ namespace lab5_7 {
 
         void bind() {
             puller->bind();
+            
         }
 
-        void close() {
-            puller->close();
+        void unbind() {
+            puller->unbind();
         }
          
         bool empty() {
