@@ -41,6 +41,12 @@ namespace lab5_7 {
             : ConnectionException("Error: attempt to disconnect not connected socket") {}
     };
 
+    class AttemptToUnbindNotConnectedSocketException : public ConnectionException {
+    public:
+        AttemptToUnbindNotConnectedSocketException() noexcept
+            : ConnectionException("Error: attempt to unbind not connected socket") {}
+    };
+
     class AttemptToSendMsgWithNotConnectedSocketException : public ConnectionException {
     public:
         AttemptToSendMsgWithNotConnectedSocketException() noexcept

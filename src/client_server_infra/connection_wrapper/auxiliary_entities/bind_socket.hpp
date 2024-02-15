@@ -26,8 +26,15 @@ namespace lab5_7 {
             is_binded.setValue(true);
         }
 
-        void close() {
-            socket.close();
+        void unbind() {
+            if (!is_binded) {
+                throw AttemptToUnbindNotConnectedSocketException();
+            } try {
+                socket.unbind(endpoint.getValue());
+            } catch (zmq::error_t const& e) {
+                throw ConnectionException(e);
+            }
+            is_binded.setValue(false);
         }
     };
 };
