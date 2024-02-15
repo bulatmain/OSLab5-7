@@ -18,9 +18,10 @@ namespace lab5_7 {
         using queue_ptr = std::shared_ptr<queue>;
 
         queue_ptr que_ptr;
+        
+        MsgQueue() : que_ptr(std::make_shared<queue>()) {}
 
     public:
-        MsgQueue() : que_ptr(std::make_shared<queue>()) {}
 
         void clear() {
             que_ptr->clear();
