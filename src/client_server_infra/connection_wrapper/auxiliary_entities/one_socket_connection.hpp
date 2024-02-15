@@ -33,6 +33,10 @@ namespace lab5_7 {
             endpoint.setValue(std::move(str));
         }
     
+        void close() {
+            socket.close();
+        }
+    
     protected:
         virtual void recv(zmq::message_t& msg, zmq::recv_flags flag = zmq::recv_flags::none) try {
             recv_res = std::make_shared<zmq::recv_result_t>(socket.recv(msg, flag));
