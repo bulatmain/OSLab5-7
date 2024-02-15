@@ -5,8 +5,10 @@
 
 namespace lab5_7 {
     class PullQueue : public MsgQueue {
-    public:
+    protected:
         PullQueue() : MsgQueue() {}
+    
+    public:
 
         void pull(zmq::message_t& msg) {
             que_ptr->wait_and_pop(msg);

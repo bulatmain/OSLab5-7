@@ -5,10 +5,10 @@
 
 namespace lab5_7 {
     class PushQueue : public MsgQueue {
-    public:
+    protected:
         PushQueue() : MsgQueue() {}
-
-        void push(zmq::message_t&& msg) {
+    
+    public:void push(zmq::message_t&& msg) {
             que_ptr->push(std::move(msg));
         }
 
