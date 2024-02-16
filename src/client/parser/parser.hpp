@@ -3,7 +3,7 @@
 
 #include <request/commands/commands_module.hpp>
 
-#include <list>
+#include <sstream>
 #include <stdexcept>
 
 namespace lab5_7 {
@@ -53,16 +53,84 @@ namespace lab5_7 {
             parse_happened = true;
         }
 
+        void check_command(std::istringstream& iss, std::string const& command_name) {
+            std::string _command_name;
+            iss >> _command_name;
+            if (_command_name != command_name) {
+                throw std::runtime_error("Error: given input is not " + command_name + " type");
+            }
+        }
+
+        void check_if_stream_is_empty(std::istringstream& iss) {
+            char _; iss >> _;
+            if (!iss.eof()) {
+                throw std::invalid_argument("Error: invalid input");
+            }
+        }
+
+        template <typename T>
+        void read_var_or_throw_exception(std::istringstream& iss, T& var) {
+            if (!(iss >> var)) {
+                throw std::invalid_argument("Error: invalid input");
+            }
+        }
+
+        template <class Arg>
+        void read_vars_or_throw_exception(std::istringstream& iss, Arg& arg) {
+            read_var_or_throw_exception(iss, arg);
+        }
+
+        template <class First, class... Args>
+        void read_vars_or_throw_exception(std::istringstream& iss, First& arg, Args&... args) {
+            read_var_or_throw_exception(iss, arg);
+            read_vars_or_throw_exception(iss, args...);
+        }
+
         Command::cmd_ptr tryParseCreate(std::string const& input) {
-            throw std::runtime_error("Create");
+            std::istringstream iss(input);
+            check_command(iss, "create");
+            try {
+                uint16_t newNodeId, parentId;
+                read_vars_or_throw_exception(iss, newNodeId, parentId);
+                check_if_stream_is_empty(iss);
+                return Command::construct<CommandCreate>(newNodeId, parentId);
+            } catch (...) {
+                throw std::runtime_error("Error: given input is not create type");
+            }
+        }
+
+        template <typename T>
+        void read_vector_or_throw_exception(std::istringstream& iss, std::vector<double>& v) {
+            for (auto& each : v) {
+                read_var_or_throw_exception(iss, each);
+            }
         }
 
         Command::cmd_ptr tryParseExec(std::string const& input) {
-            return std::make_shared<CommandExec>(1, 1, 2, 3);
+            std::istringstream iss(input);
+            check_command(iss, "exec");
+            try {
+                uint16_t id; std::size_t n;
+                read_vars_or_throw_exception(iss, id, n);
+                std::vector<double> k(n);
+                read_vector_or_throw_exception<double>(iss, k);
+                check_if_stream_is_empty(iss);
+                return Command::construct<CommandExec>(id, std::move(k));
+            } catch (...) {
+                throw std::runtime_error("Error: given input is not exec type");
+            }
         }
 
+
         Command::cmd_ptr tryParsePrintTree(std::string const& input) {
-            throw std::runtime_error("PrintTree");
+            std::istringstream iss(input);
+            check_command(iss, "print");
+            try {
+                check_if_stream_is_empty(iss);
+                return Command::construct<CommandPrintTree>();
+            } catch (...) {
+                throw std::runtime_error("Error: given input is not print type");
+            }
         }
 
     };
