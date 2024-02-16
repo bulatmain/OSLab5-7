@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "../request.hpp"
-#include "command_types.h"
+#include "command_types.hpp"
 
 namespace lab5_7 {
     class Command : public Request {
