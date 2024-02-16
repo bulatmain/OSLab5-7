@@ -7,13 +7,15 @@ namespace lab5_7 {
     enum CommandType {
         Create,
         Exec,
-        PrintTree
+        PrintTree,
+        Pass
     };
 
     static std::list<CommandType> commandTypeList{
         Create,
         Exec,
-        PrintTree
+        PrintTree,
+        Pass
     };
 
 };

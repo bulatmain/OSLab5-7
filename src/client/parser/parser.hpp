@@ -1,7 +1,7 @@
 #ifndef CLIENT_PARSER_HPP
 #define CLIENT_PARSER_HPP
 
-#include <request/commands/commands_module.hpp>
+#include <request/request_module.hpp>
 
 #include <sstream>
 #include <stdexcept>
@@ -47,6 +47,8 @@ namespace lab5_7 {
                 res = std::move(tryParseExec(input));
             } else if (type == PrintTree) {
                 res = std::move(tryParsePrintTree(input));
+            } else if (type == Pass) {
+                res = std::move(tryParsePass(input));
             } else {
                 throw std::invalid_argument("Wtf?");
             }
@@ -130,6 +132,19 @@ namespace lab5_7 {
                 return Command::construct<CommandPrintTree>();
             } catch (...) {
                 throw std::runtime_error("Error: given input is not print type");
+            }
+        }
+
+        Command::cmd_ptr tryParsePass(std::string const& input) {
+            std::istringstream iss(input);
+            check_command(iss, "pass");
+            try {
+                CommandPass::duration_ms time;
+                read_var_or_throw_exception(iss, time);
+                check_if_stream_is_empty(iss);
+                return Command::construct<CommandPass>(time);
+            } catch (...) {
+                throw std::runtime_error("Error: given input is not create type");
             }
         }
 

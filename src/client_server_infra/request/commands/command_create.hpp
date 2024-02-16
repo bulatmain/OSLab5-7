@@ -11,7 +11,7 @@ namespace lab5_7 {
         uint16_t newNodeId;
         uint16_t parentId; 
     public:
-        CommandCreate(uint16_t newNodeId, uint16_t parentId)
+        CommandCreate(uint16_t newNodeId, uint16_t parentId) noexcept
              : newNodeId(newNodeId), parentId(parentId) {}
 
         virtual CommandType identify() const {

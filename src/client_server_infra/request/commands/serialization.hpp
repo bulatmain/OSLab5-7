@@ -33,6 +33,8 @@ namespace lab5_7 {
             return CommandType::Exec;
         } else if (command_type == "PrintTree") {
             return CommandType::PrintTree;
+        } else if (command_type == "Pass") {
+            return CommandType::Pass;
         } else {
             throw std::invalid_argument("Error, initiated at defineCommandType(...): can not define command type");
         }
@@ -46,6 +48,8 @@ namespace lab5_7 {
             return std::move(CommandExec::deserialize(ser_cmd));
         case CommandType::PrintTree:
                return std::move(CommandPrintTree::deserialize(ser_cmd));
+        case CommandType::Pass:
+               return std::move(CommandPass::deserialize(ser_cmd));
         default:
             assert(false);
         }
