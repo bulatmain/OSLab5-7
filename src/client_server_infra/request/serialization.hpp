@@ -46,6 +46,11 @@ namespace lab5_7 {
         return std::move(Request::deserialize(_req_str));
     }
 
+    Request::req_ptr Request::deserialize(std::string const& req_str) {
+        auto _req_str = req_str;
+        return std::move(Request::deserialize(std::move(_req_str)));
+    }
+
     template <typename T>
     void Request::add_first_class_variable(std::string& req_str, T const& var) const {
         req_str += "{" + std::to_string(var);

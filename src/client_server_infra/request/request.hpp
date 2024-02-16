@@ -22,6 +22,7 @@ namespace lab5_7 {
 
         static req_ptr deserialize(std::string& req_str);
         static req_ptr deserialize(std::string&& req_str);
+        static req_ptr deserialize(std::string const& req_str);
 
         virtual ~Request() = 0;
     protected:

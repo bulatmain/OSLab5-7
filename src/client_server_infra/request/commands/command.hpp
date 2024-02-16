@@ -26,6 +26,7 @@ namespace lab5_7 {
 
         static cmd_ptr deserialize(std::string& ser_cmd);
         static cmd_ptr deserialize(std::string&& ser_cmd);
+        static cmd_ptr deserialize(std::string const& ser_cmd);
 
         virtual void print() const {
             std::cout << this->serialize() << "\n"; 

@@ -58,7 +58,12 @@ namespace lab5_7 {
 
     Command::cmd_ptr Command::deserialize(std::string&& ser_cmd) {
         auto _ser_cmd = std::move(ser_cmd);
-        return Command::deserialize(_ser_cmd);
+        return std::move(Command::deserialize(_ser_cmd));
+    }
+
+    Command::cmd_ptr Command::deserialize(std::string const& ser_cmd) {
+        auto _ser_cmd = ser_cmd;
+        return std::move(Command::deserialize(std::move(_ser_cmd)));
     }
 };
 
