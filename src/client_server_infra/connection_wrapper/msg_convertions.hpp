@@ -3,7 +3,7 @@
 
 #include "zmq.hpp"
 
-#include <commands/commands_module.hpp>
+#include <request/commands/commands_module.hpp>
 
 namespace lab5_7 {
     zmq::message_t to_msg(std::string const& str) {

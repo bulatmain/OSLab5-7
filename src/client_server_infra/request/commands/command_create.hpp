@@ -18,22 +18,22 @@ namespace lab5_7 {
             return CommandType::Create;
         }
 
-        virtual std::string serialize() const {
-            return std::move(serializeWithArguments(newNodeId, parentId));
-        } 
-
-        virtual void add_class_type(std::string& ser_cmd) const {
-            ser_cmd += "Create";
-        }
-
         static Command::cmd_ptr deserialize(std::string const& ser_cmd) {
             std::size_t pos = find_start_of_class_vars(ser_cmd);
             uint16_t newNodeId = getNextVar<uint16_t>(ser_cmd, pos);
             uint16_t parentId = getNextVar<uint16_t>(ser_cmd, pos);
             return std::make_shared<CommandCreate>(newNodeId, parentId);
-        }  
+        }
+        
+    protected:
+        virtual void serialize_command(std::string& ser_cmd) const override final {
+            serializeWithArguments(ser_cmd, newNodeId, parentId);
+        }
 
-        virtual ~CommandCreate() = default;
+        virtual void add_command_type(std::string& ser_cmd) const override final {
+            ser_cmd += "Create";
+        }
+
     };
 };
 
