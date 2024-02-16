@@ -4,7 +4,8 @@ project(client_server_infra LANGUAGES CXX)
 
 add_compile_options(
         -g
-        -Werror
+        -lzmq
+        # -Werror
 
         -Wall
         -Wextra
@@ -23,6 +24,12 @@ if(NOT CMAKE_C_EXTENSIONS)
     set(CMAKE_C_EXTENSIONS OFF)
 endif()
 
-add_library(cs_infra STATIC
-    cs_infra.hpp
-)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# To include infrastructure in cpp file add "#include <infrastructure_module.hpp>" 
+add_library(infrastructure STATIC ./infrastructure_module.hpp)
+set_target_properties(infrastructure PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(infrastructure PUBLIC zmq)
+
