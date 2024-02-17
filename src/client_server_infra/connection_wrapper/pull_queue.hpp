@@ -48,6 +48,10 @@ namespace lab5_7 {
         }
 
         void unbind() {
+            if (keep_running->getValue()) {
+                keep_running->setValue(false);
+                stop();
+            }
             puller->unbind();
         }
          

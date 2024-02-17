@@ -46,6 +46,10 @@ namespace lab5_7 {
         }
 
         void disconnect() {
+            if (keep_running->getValue()) {
+                keep_running->setValue(false);
+                stop();
+            }
             pusher->disconnect();
         }
          
