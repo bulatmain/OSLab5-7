@@ -2,6 +2,6 @@
 #define INFRASTRUCTURE_MODULE_HPP
 
 #include "connection_wrapper/connection_module.hpp"
-#include "request/request_module.hpp"
+#include "message/message_module.hpp"
 
 #endif

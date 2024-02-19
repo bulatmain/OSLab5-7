@@ -1,7 +1,7 @@
 #ifndef CLIENT_PARSER_HPP
 #define CLIENT_PARSER_HPP
 
-#include <request/request_module.hpp>
+#include <message/message_module.hpp>
 
 #include <sstream>
 #include <stdexcept>

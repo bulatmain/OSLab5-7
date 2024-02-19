@@ -1,13 +1,14 @@
 #ifndef REQUEST_HPP
 #define REQUEST_HPP
 
+#include "../message.hpp"
 #include "request_types.hpp"
 
 #include <memory>
 #include <string>
 
 namespace lab5_7 {
-    class Request {
+    class Request : public Message {
     public:
         using req_ptr = std::shared_ptr<Request>;
 
