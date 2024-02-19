@@ -11,10 +11,14 @@ namespace lab5_7 {
         Pass
     };
 
-    static std::list<CommandType> commandTypeList{
+    static std::list<CommandType> const commandTypeList{
         Create,
         Exec,
         PrintTree,
+        Pass
+    };
+
+    static std::list<CommandType> const clientSideCommandTypeList{
         Pass
     };
 
