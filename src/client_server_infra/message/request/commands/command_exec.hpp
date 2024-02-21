@@ -12,8 +12,8 @@ concept ConvertableToDouble = std::is_convertible<T, double>::value;
 namespace lab5_7 {
     class CommandExec : public Command {
     public:
-        uint16_t nodeId;
-        std::vector<double> k;
+        uint16_t const nodeId;
+        std::vector<double> const k;
 
     public:
         CommandExec(uint16_t nodeId, std::vector<double> const& k)

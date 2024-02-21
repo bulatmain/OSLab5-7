@@ -17,7 +17,7 @@ namespace lab5_7 {
     class CommandPass : public Command {
     public:
         using duration_ms = std::chrono::milliseconds;
-        duration_ms time;
+        duration_ms const time;
     public:
         CommandPass(duration_ms time) noexcept
             : time(time)  {}

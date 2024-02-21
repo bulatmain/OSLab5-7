@@ -4,5 +4,6 @@
 #include "request.hpp"
 #include "serialization.hpp"
 #include "commands/commands_module.hpp"
+#include "authorization/authorization_module.hpp"
 
 #endif

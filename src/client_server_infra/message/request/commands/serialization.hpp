@@ -1,32 +1,13 @@
 #ifndef CMD_SERIALIZATION_HPP
 #define CMD_SERIALIZATION_HPP
 
-#include <sstream>
 #include <stdexcept>
-#include <cassert>
 
 #include "commands_module.hpp"
 
 namespace lab5_7 {
-    template <typename First, typename... Rest>
-    void Command::serializeWithArguments(std::string& req_str, First const& arg, Rest const&... args) const {
-        add_command_type(req_str);
-        add_first_class_variable(req_str, arg);
-        for (auto const& arg : {args...}) {
-            add_next_class_variable(req_str, arg);
-        }
-        complete_serialization(req_str);
-    }
-
-    std::string extractCommandType(std::string& ser_cmd) {
-        std::size_t pos = ser_cmd.find('{');
-        auto command_type = ser_cmd.substr(0, pos); 
-        ser_cmd = ser_cmd.substr(pos + 1, ser_cmd.size() - 1);
-        return command_type;
-    }
-
     CommandType defineCommandType(std::string& ser_cmd) {
-        std::string command_type = extractCommandType(ser_cmd);
+        std::string command_type = extractType(ser_cmd);
         if (command_type == "Create") {
             return CommandType::Create;
         } else if (command_type == "Exec") {
@@ -51,7 +32,7 @@ namespace lab5_7 {
         case CommandType::Pass:
                return std::move(CommandPass::deserialize(ser_cmd));
         default:
-            assert(false);
+            throw std::runtime_error("Wtf?");
         }
     }
 

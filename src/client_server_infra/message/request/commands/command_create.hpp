@@ -8,8 +8,8 @@
 namespace lab5_7 {
     class CommandCreate : public Command {
     public:
-        uint16_t newNodeId;
-        uint16_t parentId; 
+        uint16_t const newNodeId;
+        uint16_t const parentId; 
     public:
         CommandCreate(uint16_t newNodeId, uint16_t parentId) noexcept
              : newNodeId(newNodeId), parentId(parentId) {}

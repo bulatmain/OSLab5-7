@@ -5,13 +5,13 @@
 
 namespace lab5_7 {
     enum RequestType {
-        Command/*,
-        Authorize*/
+        Command,
+        Authorization
     };
 
     static const std::list<RequestType> requestTypeList{
-        Command/*,
-        Authorize*/
+        Command,
+        Authorization
     };
 };
 
