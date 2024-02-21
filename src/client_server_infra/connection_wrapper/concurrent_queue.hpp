@@ -73,7 +73,7 @@ class ConcurrentQueue {
         template <typename S>
         std::list<S> map(std::function<S(T const&)> conversion) {
             std::lock_guard<std::mutex> lock(_mutex);
-            return const_cast<ConcurrentQueue const*>(this)->map(conversion);
+            return std::move(const_cast<ConcurrentQueue const*>(this)->map(conversion));
         }
 
         std::list<T> unload() {
