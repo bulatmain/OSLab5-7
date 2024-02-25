@@ -1,9 +1,11 @@
 #ifndef CMD_SERIALIZATION_HPP
 #define CMD_SERIALIZATION_HPP
 
-#include <stdexcept>
-
-#include "commands_module.hpp"
+#include "command.hpp"
+#include "command_create.hpp"
+#include "command_exec.hpp"
+#include "command_print_tree.hpp"
+#include "command_pass.hpp"
 
 namespace lab5_7 {
     CommandType defineCommandType(std::string& ser_cmd) {
@@ -24,21 +26,29 @@ namespace lab5_7 {
     Command::cmd_ptr deserializeType(CommandType type, std::string& ser_cmd) {
         switch (type) {
         case CommandType::Create:
-            return std::move(CommandCreate::deserialize(ser_cmd));
+            return std::move(CommandCreate::deserializeUnpacked(ser_cmd));
         case CommandType::Exec:
-            return std::move(CommandExec::deserialize(ser_cmd));
+            return std::move(CommandExec::deserializeUnpacked(ser_cmd));
         case CommandType::PrintTree:
-               return std::move(CommandPrintTree::deserialize(ser_cmd));
+               return std::move(CommandPrintTree::deserializeUnpacked(ser_cmd));
         case CommandType::Pass:
-               return std::move(CommandPass::deserialize(ser_cmd));
+               return std::move(CommandPass::deserializeUnpacked(ser_cmd));
         default:
             throw std::runtime_error("Wtf?");
         }
     }
 
-    Command::cmd_ptr Command::deserialize(std::string& ser_cmd) {
+    Command::cmd_ptr Command::deserializeUnpacked(std::string& ser_cmd) {
         CommandType type = defineCommandType(ser_cmd);
         return std::move(deserializeType(type, ser_cmd));
+    }
+
+    
+    Command::cmd_ptr Command::deserialize(std::string& ser_cmd) {
+        if (extractType(ser_cmd) != "Command") {
+            throw std::invalid_argument("Error: trying to deserialize invalid command string");
+        }
+        return deserializeUnpacked(ser_cmd);
     }
 
     Command::cmd_ptr Command::deserialize(std::string&& ser_cmd) {

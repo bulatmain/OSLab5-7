@@ -12,7 +12,7 @@ namespace lab5_7 {
     static std::list<MessageType> const messageTypeList {
         Request,
         Responce        
-    }
+    };
 
 };
 

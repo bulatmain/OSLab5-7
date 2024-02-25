@@ -12,18 +12,25 @@ namespace lab5_7 {
             return CommandType::PrintTree;
         }
 
-        static Command::cmd_ptr deserialize(std::string const& ser_cmd) {
+        static Command::cmd_ptr deserialize(std::string& ser_cmd) {
+            if (extractType(ser_cmd) != "PrintTree") {
+                throw std::invalid_argument("Error: trying to deserialize invalid command_print_tree string");
+            }
+            return deserializeUnpacked(ser_cmd);
+        }
+
+        static Command::cmd_ptr deserializeUnpacked(std::string const&) {
             return std::make_shared<CommandPrintTree>();
         }
 
     protected:
         virtual void serialize_command(std::string& ser_cmd) const override final {
-            add_command_type(ser_cmd);
-            ser_cmd += "{}";
+            add_command_print_tree_header(ser_cmd);
+            complete_serialization(ser_cmd);
         } 
 
-        virtual void add_command_type(std::string& ser_cmd) const override final {
-            ser_cmd += "PrintTree";
+        void add_command_print_tree_header(std::string& ser_cmd) const {
+            ser_cmd += "PrintTree{";
         }
  
     };

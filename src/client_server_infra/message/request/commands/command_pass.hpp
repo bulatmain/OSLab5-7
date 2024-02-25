@@ -26,7 +26,14 @@ namespace lab5_7 {
             return CommandType::Pass;
         }
 
-        static Command::cmd_ptr deserialize(std::string const& ser_cmd) {
+        static Command::cmd_ptr deserialize(std::string& ser_cmd) {
+            if (extractType(ser_cmd) != "Pass") {
+                throw std::invalid_argument("Error: trying to deserialize invalid command_pass string");
+            }
+            return deserializeUnpacked(ser_cmd);
+        }
+
+        static Command::cmd_ptr deserializeUnpacked(std::string const& ser_cmd) {
             std::size_t pos = find_start_of_class_vars(ser_cmd);
             duration_ms time = getNextVar<duration_ms>(ser_cmd, pos);
             return std::make_shared<CommandPass>(time);
@@ -34,13 +41,13 @@ namespace lab5_7 {
 
     protected:
         virtual void serialize_command(std::string& ser_cmd) const override final {
-            add_command_type(ser_cmd);
+            add_command_pass_header(ser_cmd);
             add_first_class_variable(ser_cmd, time.count());
             complete_serialization(ser_cmd);
         }
 
-        virtual void add_command_type(std::string& ser_cmd) const override final {
-            ser_cmd += "Pass";
+        void add_command_pass_header(std::string& ser_cmd) const {
+            ser_cmd += "Pass{";
         }
 
     };

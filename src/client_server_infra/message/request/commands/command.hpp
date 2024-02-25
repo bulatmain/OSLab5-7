@@ -16,27 +16,22 @@ namespace lab5_7 {
         static cmd_ptr deserialize(std::string& ser_cmd);
         static cmd_ptr deserialize(std::string&& ser_cmd);
         static cmd_ptr deserialize(std::string const& ser_cmd);
-
-        virtual void print() const {
-            std::cout << this->serialize() << "\n"; 
-        }
+        static cmd_ptr deserializeUnpacked(std::string& ser_cmd);
 
         virtual ~Command() = 0; 
 
     protected:
         virtual void serialize_request(std::string& req_str) const override final {
-            add_request_type(req_str);
+            add_command_header(req_str);
             serialize_command(req_str);
             complete_serialization(req_str);
         }
 
         virtual void serialize_command(std::string& req_str) const = 0;        
 
-        void add_request_type(std::string& req_str) const {
+        void add_command_header(std::string& req_str) const {
             req_str += "Command{";
         }
-
-        virtual void add_command_type(std::string& req_str) const = 0;
 
     };
 

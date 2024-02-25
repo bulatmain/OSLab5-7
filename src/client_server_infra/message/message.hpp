@@ -2,9 +2,11 @@
 #define MESSAGE_HPP
 
 #include "message_types.hpp"
+#include "aux_ser_funcs.hpp"
 
 #include <memory>
 #include <string>
+#include <iostream>
 
 namespace lab5_7 {
     class Message {
@@ -20,7 +22,7 @@ namespace lab5_7 {
             return std::make_shared<T>(args...);
         }
         
-        // String format: Message{<Derived_1>{<Derived_2>{...Derived_n{...}...}}}
+        // String format: <Derived_1>{<Derived_1>{<Derived_2>{...Derived_n{...}...}}}
         virtual std::string serialize() const final {
             std::string msg_str;
             add_message_header(msg_str);
@@ -29,27 +31,29 @@ namespace lab5_7 {
             return msg_str;
         }
 
-        static msg_ptr deserialize(std::string& req_str);
-        static msg_ptr deserialize(std::string&& req_str);
-        static msg_ptr deserialize(std::string const& req_str);
+        static msg_ptr deserialize(std::string& msg_str);
+        static msg_ptr deserialize(std::string&& msg_str);
+        static msg_ptr deserialize(std::string const& msg_str);
+        static msg_ptr deserializeUnpacked(std::string& msg_str);
 
         virtual ~Message() = 0;
 
     protected:
-        template <typename First, typename... Rest>
-        void serializeWithArguments(std::string& req_str, First const& arg, Rest const&... args) const;
-
-        virtual void add_message_header(std::string& msg_str) const final {
+        void add_message_header(std::string& msg_str) const {
             msg_str += "Message{";
         }
 
         virtual void serialize_message(std::string& msg_str) const = 0;
-
-        virtual void add_message_type(std::string& msg_str) const = 0;
-
+        
     };
 
     Message::~Message() {}
+
+    template <typename T, typename... Args>
+    std::shared_ptr<T> constructMessageType(Args... args) {
+        return std::dynamic_pointer_cast<T>(Message::construct<T>(args...));
+    }
+
 };
 
 #endif

@@ -3,6 +3,6 @@
 
 #include "authorization.hpp"
 #include "serialization.hpp"
-#include "auth_with_name.hpp"
+#include "authorization_with_name.hpp"
 
 #endif

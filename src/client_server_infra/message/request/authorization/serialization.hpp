@@ -1,12 +1,15 @@
 #ifndef AUTH_SERIALIZATION_HPP
 #define AUTH_SERIALIZATION_HPP
 
-#include "authorization_module.hpp"
+#include "authorization.hpp"
+#include "authorization_with_name.hpp"
+
+#include <iostream>
 
 namespace lab5_7 {
         AuthorizationType defineAuthorizeType(std::string& auth_ser) {
         std::string auth_type = extractType(auth_ser);
-        if (auth_type == "AuthWithName") {
+        if (auth_type == "AuthorizationWithName") {
             return AuthorizationType::AuthWithName;
         } else {
             throw std::invalid_argument("Error, initiated at defineAuthorizeType(...): can not define command type");
@@ -16,15 +19,23 @@ namespace lab5_7 {
     Authorization::auth_ptr deserializeType(AuthorizationType type, std::string& auth_ser) {
         switch (type) {
         case AuthorizationType::AuthWithName:
-            return std::move(AuthWithName::deserialize(auth_ser));
+            return std::move(AuthorizationWithName::deserializeUnpacked(auth_ser));
         default:
             throw std::runtime_error("Wtf?");
         }
     }
 
-    Authorization::auth_ptr Authorization::deserialize(std::string& auth_ser) {
+    Authorization::auth_ptr Authorization::deserializeUnpacked(std::string& auth_ser) {
+        std::cout << auth_ser << "\n";
         AuthorizationType type = defineAuthorizeType(auth_ser);
         return std::move(deserializeType(type, auth_ser));
+    }
+
+    Authorization::auth_ptr Authorization::deserialize(std::string& auth_ser) {
+        if (extractType(auth_ser) != "Authorization") {
+            throw std::invalid_argument("Error: trying to deserialize invalid authorization string");
+        }
+        return deserializeUnpacked(auth_ser);
     }
 
     Authorization::auth_ptr Authorization::deserialize(std::string&& auth_ser) {

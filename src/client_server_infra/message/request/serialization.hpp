@@ -1,9 +1,9 @@
 #ifndef REQ_SERIALIZATION_HPP
 #define REQ_SERIALIZATION_HPP
 
-#include "request_module.hpp"
-
-#include <string>
+#include "request.hpp"
+#include "commands/command.hpp"
+#include "authorization/authorization.hpp"
 
 namespace lab5_7 {
     RequestType defineRequestType(std::string& req_str) {
@@ -19,17 +19,25 @@ namespace lab5_7 {
 
     Request::req_ptr deserializeType(RequestType type, std::string& req_str) {
         if (type == Command) {
-            return Command::deserialize(std::move(req_str));
+            return Command::deserializeUnpacked(req_str);
         } else if (type == Authorization) {
-            return Authorization::deserialize(std::move(req_str));
+            return Authorization::deserializeUnpacked(req_str);
         } else {
             throw std::invalid_argument("Wtf?");
         }
     }
 
-    Request::req_ptr Request::deserialize(std::string& req_str) {
+    Request::req_ptr Request::deserializeUnpacked(std::string& req_str) {
+        std::cout << req_str << "\n";
         RequestType type = defineRequestType(req_str);
         return deserializeType(type, req_str);
+    }
+
+    Request::req_ptr Request::deserialize(std::string& req_str) {
+        if (extractType(req_str) != "Request") {
+            throw std::invalid_argument("Error: attempt to deserialize invalid message string");
+        }
+        return deserializeUnpacked(req_str);
     }
 
     Request::req_ptr Request::deserialize(std::string&& req_str) {

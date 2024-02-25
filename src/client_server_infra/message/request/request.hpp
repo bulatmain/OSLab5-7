@@ -12,19 +12,25 @@ namespace lab5_7 {
         static req_ptr deserialize(std::string& req_str);
         static req_ptr deserialize(std::string&& req_str);
         static req_ptr deserialize(std::string const& req_str);
+        static req_ptr deserializeUnpacked(std::string& req_str);
 
-        virtual ~Request() = 0;
+        virtual ~Request() = default;
     protected:
+
         virtual void serialize_request(std::string& req_str) const = 0;
 
-        virtual void add_message_type(std::string& req_str) const final {
+        virtual void serialize_message(std::string& msg_str) const final {
+            add_request_header(msg_str);
+            serialize_request(msg_str);
+            complete_serialization(msg_str);
+        }
+
+        void add_request_header(std::string& req_str) const {
             req_str += "Request{";
         }
-        virtual void add_request_type(std::string& req_str) const = 0;
 
     };
 
-    Request::~Request() {};
 };
 
 #endif

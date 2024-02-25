@@ -18,7 +18,14 @@ namespace lab5_7 {
             return CommandType::Create;
         }
 
-        static Command::cmd_ptr deserialize(std::string const& ser_cmd) {
+        static Command::cmd_ptr deserialize(std::string& ser_cmd) {
+            if (extractType(ser_cmd) != "Create") {
+                throw std::invalid_argument("Error: trying to deserialize invalid command_create string");
+            }
+            return deserializeUnpacked(ser_cmd);
+        }
+
+        static Command::cmd_ptr deserializeUnpacked(std::string const& ser_cmd) {
             std::size_t pos = find_start_of_class_vars(ser_cmd);
             uint16_t newNodeId = getNextVar<uint16_t>(ser_cmd, pos);
             uint16_t parentId = getNextVar<uint16_t>(ser_cmd, pos);
@@ -27,11 +34,14 @@ namespace lab5_7 {
         
     protected:
         virtual void serialize_command(std::string& ser_cmd) const override final {
-            serializeWithArguments(ser_cmd, newNodeId, parentId);
+            add_command_create_header(ser_cmd);
+            add_first_class_variable(ser_cmd, newNodeId);
+            add_next_class_variable(ser_cmd, parentId);
+            complete_serialization(ser_cmd);
         }
 
-        virtual void add_command_type(std::string& ser_cmd) const override final {
-            ser_cmd += "Create";
+        void add_command_create_header(std::string& ser_cmd) const {
+            ser_cmd += "Create{";
         }
 
     };

@@ -8,7 +8,7 @@ namespace lab5_7 {
         AuthWithName
     };
 
-    static const std::list<AuthorizationType> requestTypeList{
+    static const std::list<AuthorizationType> authorizationTypeList{
         AuthWithName
     };
 };

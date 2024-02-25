@@ -24,13 +24,20 @@ namespace lab5_7 {
 
         template <typename First, typename... Args>
         CommandExec(First arg, Args... args) 
-            : nodeId(arg), k({args...}) {}
+            : nodeId(static_cast<uint16_t>(arg)), k({args...}) {}
 
         virtual CommandType identify() const {
             return CommandType::Exec;
         }
 
-        static Command::cmd_ptr deserialize(std::string const& ser_cmd) {
+        static Command::cmd_ptr deserialize(std::string& ser_cmd) {
+            if (extractType(ser_cmd) != "Exec") {
+                throw std::invalid_argument("Error: trying to deserialize invalid command_exec string");
+            }
+            return deserializeUnpacked(ser_cmd);
+        }
+
+        static Command::cmd_ptr deserializeUnpacked(std::string const& ser_cmd) {
             std::size_t pos = find_start_of_class_vars(ser_cmd);
             uint16_t nodeId = getNextVar<uint16_t>(ser_cmd, pos);
             uint64_t n = getNextVar<uint64_t>(ser_cmd, pos);
@@ -43,7 +50,7 @@ namespace lab5_7 {
 
     protected:
         virtual void serialize_command(std::string& ser_cmd) const override final {
-            add_command_type(ser_cmd);
+            add_command_exec_header(ser_cmd);
             add_first_class_variable(ser_cmd, nodeId);
             add_next_class_variable(ser_cmd, k.size());
             for (auto const& k_i : k) {
@@ -52,8 +59,8 @@ namespace lab5_7 {
             complete_serialization(ser_cmd);
         } 
 
-        virtual void add_command_type(std::string& ser_cmd) const override final {
-            ser_cmd += "Exec";
+        void add_command_exec_header(std::string& ser_cmd) const {
+            ser_cmd += "Exec{";
         }
 
     };
