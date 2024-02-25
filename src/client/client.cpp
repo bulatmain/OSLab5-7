@@ -8,7 +8,7 @@ using namespace lab5_7;
 int main(int argc, char** argv) {
     std::string serverEndpoint(argv[1]);
 
-    Client client(serverEndpoint);
+    Client client(serverEndpoint, "bulat");
 
     client.launch();
 

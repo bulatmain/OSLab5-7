@@ -27,7 +27,6 @@ namespace lab5_7 {
     }
 
     Message::msg_ptr Message::deserializeUnpacked(std::string& msg_str) {
-        std::cout << msg_str << "\n";
         MessageType type = defineMessageType(msg_str);
         return deserializeType(type, msg_str);
     }

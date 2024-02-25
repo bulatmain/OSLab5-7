@@ -28,7 +28,6 @@ namespace lab5_7 {
     }
 
     Request::req_ptr Request::deserializeUnpacked(std::string& req_str) {
-        std::cout << req_str << "\n";
         RequestType type = defineRequestType(req_str);
         return deserializeType(type, req_str);
     }

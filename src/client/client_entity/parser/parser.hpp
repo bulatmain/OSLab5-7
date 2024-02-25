@@ -95,7 +95,7 @@ namespace lab5_7 {
                 uint16_t newNodeId, parentId;
                 read_vars_or_throw_exception(iss, newNodeId, parentId);
                 check_if_stream_is_empty(iss);
-                return Command::construct<CommandCreate>(newNodeId, parentId);
+                return constructMessageType<CommandCreate>(newNodeId, parentId);
             } catch (...) {
                 throw std::runtime_error("Error: given input is not create type");
             }
@@ -117,7 +117,7 @@ namespace lab5_7 {
                 std::vector<double> k(n);
                 read_vector_or_throw_exception<double>(iss, k);
                 check_if_stream_is_empty(iss);
-                return Command::construct<CommandExec>(id, std::move(k));
+                return constructMessageType<CommandExec>(id, std::move(k));
             } catch (...) {
                 throw std::runtime_error("Error: given input is not exec type");
             }
@@ -129,7 +129,7 @@ namespace lab5_7 {
             check_command(iss, "print");
             try {
                 check_if_stream_is_empty(iss);
-                return Command::construct<CommandPrintTree>();
+                return constructMessageType<CommandPrintTree>();
             } catch (...) {
                 throw std::runtime_error("Error: given input is not print type");
             }
@@ -142,7 +142,7 @@ namespace lab5_7 {
                 CommandPass::duration_ms time;
                 read_var_or_throw_exception(iss, time);
                 check_if_stream_is_empty(iss);
-                return Command::construct<CommandPass>(time);
+                return constructMessageType<CommandPass>(time);
             } catch (...) {
                 throw std::runtime_error("Error: given input is not create type");
             }

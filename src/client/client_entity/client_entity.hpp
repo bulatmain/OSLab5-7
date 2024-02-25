@@ -39,14 +39,14 @@ namespace lab5_7 {
         ClientParser parser;
 
         std::string const selfEndpoint = *getSelfEndpoint();
+        std::string const clientName;
         PushQueue pusher;
         PullQueue puller;
 
-
     public:
         // TODO: Constructors
-        Client(std::string const& serverEndpoint)
-            : pusher(serverEndpoint), puller(selfEndpoint) {
+        Client(std::string const& serverEndpoint, std::string const& clientName)
+            : clientName(clientName), pusher(serverEndpoint), puller(selfEndpoint) {
                 std::cout << "Self endpoint: " << selfEndpoint << std::endl;
 
                 pusher.connect();
@@ -57,18 +57,7 @@ namespace lab5_7 {
             }
 
         void launch() {
-            // sendSelfEndpointToServer();
-            while (true) {
-                zmq::message_t endpoint_msg(selfEndpoint);
-                pusher.push(selfEndpoint);
-
-                zmq::message_t acceptance;
-                if (puller.try_pull(acceptance)) {
-                    break;
-                } else {
-                    std::this_thread::sleep_for(1000ms);
-                }
-            }
+            connectWithServer();
             run();
         }
 
@@ -77,40 +66,56 @@ namespace lab5_7 {
             puller.stop();
         }
 
-        ~Client() noexcept {
+        ~Client() {
             stop();
         }
 
     protected:
-        void sendSelfEndpointToServer() {
-            zmq::message_t endpoint_msg(selfEndpoint);
-            pusher.push(selfEndpoint);
+        void connectWithServer() {
+            pushAuthMessage();
+            waitTillAuthAccepted();
+        }
+
+        void pushAuthMessage() {
+            auto auth_msg = constructMessageType<AuthorizationWithName>(selfEndpoint, clientName);
+            pushRequestToQueue(auth_msg);
+        }
+
+        void waitTillAuthAccepted() {
+            std::cout << "Connecting to server...\n";
+            std::size_t seconds_left = 0;
+            do {
+                waitTillPullerIsNotEmpty(seconds_left);
+            } while (!goodPulledResponce());
+        }
+
+        void waitTillPullerIsNotEmpty(std::size_t& seconds_left) {
+            while (puller.empty()) {
+                std::this_thread::sleep_for(1s);
+                std::cout << std::to_string(++seconds_left) + " seconds..." << std::endl;
+            }
+        }
+
+        bool goodPulledResponce() {
+            zmq::message_t msg;
+            puller.pull(msg);
+            return msg.to_string() == "Accepted!";
         }
 
         void run() {
-            auto input = std::make_shared<std::string>("");
+            auto input = std::make_shared<std::string>();
             while (true) {
                 Reader read(input);
-                auto cmd = getCommandParsedOrNull(*input);
-                if (!cmd) {
+                try {
+                    auto cmd = parser.parse(*input);
+                    handle(cmd);
+                    if (isThereActualRespone()) {
+                        printPullQueueMsgIfNotEmpty();
+                    }
+                } catch (...) {
                     printInvalidInputError();
-                    continue;
-                }
-                handle(cmd);
-                if (isThereActualRespone()) {
-                    printPullQueueMsgIfNotEmpty();
                 }
             }
-        }
-
-        Command::cmd_ptr getCommandParsedOrNull(std::string const& input) {
-            Command::cmd_ptr cmd;
-            try {
-                cmd = parser.parse(input);
-            } catch (...) {
-                cmd = nullptr;
-            }
-            return std::move(cmd);
         }
 
         void handle(Command::cmd_ptr cmd) {
@@ -138,8 +143,8 @@ namespace lab5_7 {
             return listHasElement(clientSideCommandTypeList, cmd->identify());
         }
         
-        void pushRequestToQueue(Command::cmd_ptr cmd) {
-            pusher.push(serialize(cmd));
+        void pushRequestToQueue(Request::req_ptr req) {
+            pusher.push(serialize(req));
         }
 
         void pass(Command::cmd_ptr cmd) {

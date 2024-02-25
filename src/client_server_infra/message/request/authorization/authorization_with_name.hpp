@@ -25,7 +25,6 @@ namespace lab5_7 {
         }
 
         static Authorization::auth_ptr deserializeUnpacked(std::string const& auth_str) {
-            std::cout << auth_str << "\n";
             std::size_t pos = find_start_of_class_vars(auth_str);
             std::string endpoint = getNextVar<std::string>(auth_str, pos);
             std::string name = getNextVar<std::string>(auth_str, pos);

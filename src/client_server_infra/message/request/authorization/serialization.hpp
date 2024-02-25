@@ -26,7 +26,6 @@ namespace lab5_7 {
     }
 
     Authorization::auth_ptr Authorization::deserializeUnpacked(std::string& auth_ser) {
-        std::cout << auth_ser << "\n";
         AuthorizationType type = defineAuthorizeType(auth_ser);
         return std::move(deserializeType(type, auth_ser));
     }
