@@ -32,3 +32,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_library(connection_wrapper STATIC ./connection_module.hpp)
 set_target_properties(connection_wrapper PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(connection_wrapper PUBLIC zmq)
+target_include_directories(connection_wrapper PRIVATE 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/infrastructure/message>
+    $<INSTALL_INTERFACE:message>
+)
+target_link_libraries(connection_wrapper PRIVATE message)

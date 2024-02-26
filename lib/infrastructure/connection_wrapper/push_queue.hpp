@@ -3,6 +3,7 @@
 
 #include "msg_queue.hpp"
 #include "auxiliary_entities/push_connection.hpp"
+#include "zmq.hpp"
 
 namespace lab5_7 {
     using namespace std::chrono_literals;
@@ -25,13 +26,8 @@ namespace lab5_7 {
         PushQueue(std::string&& endpoint, delay_ms request_delay = 100ms)
             : pusher(std::make_shared<PushConnection>(std::move(endpoint))), request_delay(request_delay) {}
 
-        void push(zmq::message_t&& msg) {
-            que_ptr->push(std::move(msg));
-        }
-
-        template <ConvertableToMsg T>
-        void push(T&& obj) {
-            que_ptr->push(to_msg(obj));
+        void push(Message::msg_const_ptr msg) {
+            que_ptr->push(msg);
         }
 
         void set_endpoint(std::string const& endpoint) {
@@ -90,9 +86,9 @@ namespace lab5_7 {
                     std::this_thread::sleep_for(request_delay);
                     continue;
                 } else {
-                    zmq::message_t msg;
-                    queue->wait_and_pop(msg);
-                    pusher->push(msg);
+                    auto msg = queue->wait_and_pop();
+                    zmq::message_t zmq_msg(serialize(msg));
+                    pusher->push(zmq_msg);
                 }
             }
         }  

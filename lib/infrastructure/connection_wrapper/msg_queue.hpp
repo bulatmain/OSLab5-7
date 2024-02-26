@@ -2,19 +2,14 @@
 #define MSG_QUEUE_HPP
 
 #include "concurrent_queue.hpp"
-#include "msg_convertions.hpp"
 #include "msg_queue_exceptions.hpp"
-#include "zmq.hpp"
+#include <infrastructure/message/message_module.hpp>
 
-template <typename T>
-concept ConvertableToMsg = requires(T type) {
-    lab5_7::to_msg(type);
-};
 
 namespace lab5_7 {
     class MsgQueue {
     protected:
-        using queue = ConcurrentQueue<zmq::message_t>;
+        using queue = ConcurrentQueue<Message>;
         using queue_ptr = std::shared_ptr<queue>;
 
         queue_ptr que_ptr;
@@ -38,6 +33,12 @@ namespace lab5_7 {
             auto list = std::move(copy_msgs_content());
             que_ptr->clear();
             return list;
+        }
+
+
+    protected:
+        static std::string to_string(Message::msg_const_ptr msg) {
+            return serialize(msg);
         }
 
     };

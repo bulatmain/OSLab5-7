@@ -27,12 +27,12 @@ namespace lab5_7 {
         PullQueue(std::string&& endpoint, delay_ms responce_delay = 100ms)
             : puller(std::make_shared<PullConnection>(std::move(endpoint))), responce_delay(responce_delay) {}
 
-        void pull(zmq::message_t& msg) {
-            que_ptr->wait_and_pop(msg);
+        Message::msg_ptr pull() {
+            return que_ptr->wait_and_pop();
         }
 
-        bool try_pull(zmq::message_t& msg) {
-            return que_ptr->try_pop(msg);
+        Message::msg_ptr try_pull() {
+            return que_ptr->try_pop();
         }
 
         void set_endpoint(std::string const& endpoint) {
@@ -87,16 +87,23 @@ namespace lab5_7 {
 
         static void _runRecieveThread(queue_ptr queue, socket_ptr puller, flag_ptr keep_running, delay_ms responce_delay) {
             while (keep_running->getValue()) {
-                zmq::message_t msg;
-                puller->pullDontWait(msg);
+                zmq::message_t zmq_msg;
+                puller->pullDontWait(zmq_msg);
                 auto res = puller->getPullResult();
                 if (res->has_value()) {
-                    queue->push(std::move(msg));
+                    convertZMQMsgToMsgOrPass(queue, std::move(zmq_msg));
                 } else {
                     std::this_thread::sleep_for(responce_delay);
                 }
             }
-        }  
+        }
+
+        static void convertZMQMsgToMsgOrPass(queue_ptr queue, zmq::message_t&& zmq_msg) {
+            try {
+                auto msg = Message::deserialize(std::move(zmq_msg.to_string()));
+                queue->push(std::move(msg));
+            } catch (...) {}
+        }
 
     };
 };
