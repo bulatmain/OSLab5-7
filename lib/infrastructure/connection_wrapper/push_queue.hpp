@@ -70,11 +70,12 @@ namespace lab5_7 {
         }
 
         void stop() {
-            if (!keep_running->getValue()) {
-                throw AttemptToStopNotRunningThread();
-            }
             keep_running->setValue(false);
             join_thread();
+        }
+
+        ~PushQueue() {
+            stop();
         }
 
     private:

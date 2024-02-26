@@ -1,7 +1,7 @@
 #ifndef CLIENT_ENTITY_HPP
 #define CLIENT_ENTITY_HPP
 
-#include "infrastructure_module.hpp"
+#include <infrastructure/connection_wrapper/connection_module.hpp>
 #include "parser/parser.hpp"
 #include "get_ip_func/get_ip_func.hpp"
 
@@ -86,7 +86,7 @@ namespace lab5_7 {
             std::size_t seconds_left = 0;
             do {
                 waitTillPullerIsNotEmpty(seconds_left);
-            } while (!goodPulledResponce());
+            } while (badPulledResponce());
         }
 
         void waitTillPullerIsNotEmpty(std::size_t& seconds_left) {
@@ -96,10 +96,10 @@ namespace lab5_7 {
             }
         }
 
-        bool goodPulledResponce() {
+        bool badPulledResponce() {
             zmq::message_t msg;
             puller.pull(msg);
-            return msg.to_string() == "Accepted!";
+            return msg.to_string() != "Accepted!";
         }
 
         void run() {

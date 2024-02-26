@@ -4,7 +4,7 @@ project(client LANGUAGES CXX)
 
 add_compile_options(
         -g
-        -Werror
+        # -Werror   
 
         -Wall
         -Wextra
@@ -24,6 +24,15 @@ if(NOT CMAKE_C_EXTENSIONS)
 endif()
 
 add_executable(client client.cpp)
+target_include_directories(client PRIVATE 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/infrastructure>
+    $<INSTALL_INTERFACE:infrastructure>
+)
+target_link_libraries(client PRIVATE infrastructure)
 
-set_target_properties(cs_infra PROPERTIES LINKER_LANGUAGE CXX)
-target_link_libraries(client PUBLIC cs_infra)
+add_executable(test test.cpp)
+target_include_directories(test PRIVATE 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib/infrastructure>
+    $<INSTALL_INTERFACE:infrastructure>
+)
+target_link_libraries(test PRIVATE infrastructure)
