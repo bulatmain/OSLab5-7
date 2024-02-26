@@ -41,13 +41,13 @@ namespace lab5_7 {
         }
 
         void tryParse(CommandType type, std::string const& input) {
-            if (type == Create) {
+            if (type == CreateEnum) {
                 res = std::move(tryParseCreate(input));
-            } else if (type == Exec) {
+            } else if (type == ExecEnum) {
                 res = std::move(tryParseExec(input));
-            } else if (type == PrintTree) {
+            } else if (type == PrintTreeEnum) {
                 res = std::move(tryParsePrintTree(input));
-            } else if (type == Pass) {
+            } else if (type == PassEnum) {
                 res = std::move(tryParsePass(input));
             } else {
                 throw std::invalid_argument("Wtf?");

@@ -96,10 +96,18 @@ namespace lab5_7 {
             }
         }
 
+        bool msgIsAuthorizationAcceptedType(Message::msg_ptr msg) {
+            auto p = std::dynamic_pointer_cast<AuthorizationAccepted>(msg);
+            if (p) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         bool badPulledResponce() {
-            zmq::message_t msg;
-            puller.pull(msg);
-            return msg.to_string() != "Accepted!";
+            auto msg = puller.pull();
+            return !msgIsAuthorizationAcceptedType(msg);
         }
 
         void run() {
@@ -131,8 +139,8 @@ namespace lab5_7 {
         }
 
         void handleThere(Command::cmd_ptr cmd) {
-            auto type = cmd->identify();
-            if (type == CommandType::Pass) {
+            auto type = cmd->identifyCommand();
+            if (type == CommandType::PassEnum) {
                 pass(cmd);
             } else {
                 throw std::runtime_error("Error: attempt to handle someone else's command in client handler");
@@ -140,15 +148,15 @@ namespace lab5_7 {
         }
 
         bool isAssignedToThis(Command::cmd_ptr cmd) {
-            return listHasElement(clientSideCommandTypeList, cmd->identify());
+            return listHasElement(clientSideCommandTypeList, cmd->identifyCommand());
         }
         
         void pushRequestToQueue(Request::req_ptr req) {
-            pusher.push(serialize(req));
+            pusher.push(req);
         }
 
         void pass(Command::cmd_ptr cmd) {
-            if (cmd->identify() != Pass) {
+            if (cmd->identifyCommand() != PassEnum) {
                 throw std::runtime_error("Error: attempt to call pass func of not Pass type command");
             }
             auto duration = std::dynamic_pointer_cast<CommandPass>(cmd)->time;
@@ -170,12 +178,11 @@ namespace lab5_7 {
 
         void printPullQueueMsgIfNotEmpty() {
             if (!puller.empty()) {
-                zmq::message_t msg;
-                if (puller.try_pull(msg)) {
+                try {
+                    auto msg = puller.try_pull();
                     // std::string msg_str = unpack_responce(msg);
-                    std::string msg_str = msg.to_string();
-                    std::cout << msg_str << std::endl;
-                }
+                    std::cout << serialize(msg) << std::endl;
+                } catch (...) {}
             }
         }
 
