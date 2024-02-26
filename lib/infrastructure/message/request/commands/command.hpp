@@ -11,14 +11,12 @@ namespace lab5_7 {
     public:
         using cmd_ptr = std::shared_ptr<Command>;
 
-        virtual CommandType identify() const = 0;
+        virtual CommandType identifyCommand() const = 0;
 
         static cmd_ptr deserialize(std::string& ser_cmd);
         static cmd_ptr deserialize(std::string&& ser_cmd);
         static cmd_ptr deserialize(std::string const& ser_cmd);
         static cmd_ptr deserializeUnpacked(std::string& ser_cmd);
-
-        virtual ~Command() = 0; 
 
     protected:
         virtual void serialize_request(std::string& req_str) const override final {
@@ -35,7 +33,6 @@ namespace lab5_7 {
 
     };
 
-    Command::~Command() {}
 };
 
 

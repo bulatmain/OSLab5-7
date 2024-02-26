@@ -26,8 +26,8 @@ namespace lab5_7 {
         CommandExec(First arg, Args... args) 
             : nodeId(static_cast<uint16_t>(arg)), k({args...}) {}
 
-        virtual CommandType identify() const {
-            return CommandType::Exec;
+        virtual CommandType identifyCommand() const {
+            return CommandType::ExecEnum;
         }
 
         static Command::cmd_ptr deserialize(std::string& ser_cmd) {

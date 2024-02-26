@@ -75,9 +75,9 @@ namespace lab5_7 {
                 return std::move(const_cast<ConcurrentQueue const*>(this)->map(conversion));
             }
     
-            std::list<T> unload() {
+            std::list<t_const_ptr> unload() {
                 std::lock_guard<std::mutex> lock(_mutex);
-                std::list<T> blank;
+                std::list<t_const_ptr> blank;
                 std::swap(blank, _queue);
                 return blank;
             }       

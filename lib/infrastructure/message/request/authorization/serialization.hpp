@@ -10,7 +10,7 @@ namespace lab5_7 {
         AuthorizationType defineAuthorizeType(std::string& auth_ser) {
         std::string auth_type = extractType(auth_ser);
         if (auth_type == "AuthorizationWithName") {
-            return AuthorizationType::AuthWithName;
+            return AuthorizationType::AuthWithNameEnum;
         } else {
             throw std::invalid_argument("Error, initiated at defineAuthorizeType(...): can not define command type");
         }
@@ -18,7 +18,7 @@ namespace lab5_7 {
 
     Authorization::auth_ptr deserializeType(AuthorizationType type, std::string& auth_ser) {
         switch (type) {
-        case AuthorizationType::AuthWithName:
+        case AuthorizationType::AuthWithNameEnum:
             return std::move(AuthorizationWithName::deserializeUnpacked(auth_ser));
         default:
             throw std::runtime_error("Wtf?");

@@ -22,8 +22,8 @@ namespace lab5_7 {
         CommandPass(duration_ms time) noexcept
             : time(time)  {}
 
-        virtual CommandType identify() const {
-            return CommandType::Pass;
+        virtual CommandType identifyCommand() const {
+            return CommandType::PassEnum;
         }
 
         static Command::cmd_ptr deserialize(std::string& ser_cmd) {

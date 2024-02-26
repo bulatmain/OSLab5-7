@@ -5,21 +5,21 @@
 
 namespace lab5_7 {
     enum CommandType {
-        Create,
-        Exec,
-        PrintTree,
-        Pass
+        CreateEnum,
+        ExecEnum,
+        PrintTreeEnum,
+        PassEnum
     };
 
     static std::list<CommandType> const commandTypeList{
-        Create,
-        Exec,
-        PrintTree,
-        Pass
+        CreateEnum,
+        ExecEnum,
+        PrintTreeEnum,
+        PassEnum
     };
 
     static std::list<CommandType> const clientSideCommandTypeList{
-        Pass
+        PassEnum
     };
 
 };

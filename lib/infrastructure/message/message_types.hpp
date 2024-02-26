@@ -5,13 +5,13 @@
 
 namespace lab5_7 {
     enum MessageType {
-        Request,
-        Responce
+        RequestEnum,
+        ResponseEnum
     };
 
     static std::list<MessageType> const messageTypeList {
-        Request,
-        Responce        
+        RequestEnum,
+        ResponseEnum       
     };
 
 };

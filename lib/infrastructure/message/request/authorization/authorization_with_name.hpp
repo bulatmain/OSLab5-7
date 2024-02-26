@@ -16,12 +16,20 @@ namespace lab5_7 {
         AuthorizationWithName(std::string&& endpoint, std::string&& name) noexcept
             : Authorization(std::move(endpoint)), name(std::move(name)) {}
     
-
         static Authorization::auth_ptr deserialize(std::string& auth_str) {
             if (extractType(auth_str) != "AuthorizationWithName") {
                 throw std::invalid_argument("Error: trying to deserialize invalid authorization_with_name string");
             }
             return deserializeUnpacked(auth_str);
+        }
+
+        static Authorization::auth_ptr deserialize(std::string&& auth_str) {
+            auto _ireq_str = std::move(auth_str);
+            return deserialize(auth_str);
+        }
+        static Authorization::auth_ptr deserialize(std::string const& auth_str) {
+            auto _auth_str = auth_str;
+            return deserialize(auth_str);
         }
 
         static Authorization::auth_ptr deserializeUnpacked(std::string const& auth_str) {

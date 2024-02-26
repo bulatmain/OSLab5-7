@@ -3,25 +3,26 @@
 
 #include "message.hpp"
 #include "request/request.hpp"
+#include "response/response.hpp"
 
 namespace lab5_7 {
     MessageType defineMessageType(std::string& msg_str) {
         std::string msg_type = extractType(msg_str);
         if (msg_type == "Request") {
-            return Request;
-        } /*else if (msg_type == "Responce") {
-            return Responce;
-        }*/ else {            
+            return RequestEnum;
+        } else if (msg_type == "Response") {
+            return ResponseEnum;
+        } else {            
             throw std::invalid_argument("Error, initiated at defineMessageType(...): can not define Message type");
         }
     }
 
-    Message::msg_ptr deserializeType(MessageType type, std::string& msg_type) {
-        if (type == Request) {
-            return Request::deserializeUnpacked(msg_type);
-        } /*else if (type == Response) {
-            return Response::deserialize(std::move(msg_str));
-        }*/ else {
+    Message::msg_ptr deserializeType(MessageType type, std::string& msg_str) {
+        if (type == RequestEnum) {
+            return Request::deserializeUnpacked(msg_str);
+        } else if (type == ResponseEnum) {
+            return Response::deserializeUnpacked(msg_str);
+        } else {
             throw std::invalid_argument("Wtf?");
         }
     }
@@ -48,7 +49,7 @@ namespace lab5_7 {
         return std::move(Message::deserialize(std::move(_msg_str)));
     }
 
-    std::string serialize(Message::msg_ptr msg) {
+    std::string serialize(Message::msg_const_ptr msg) {
         return msg->serialize();
     }
 

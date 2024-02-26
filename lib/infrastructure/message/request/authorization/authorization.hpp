@@ -17,8 +17,6 @@ namespace lab5_7 {
         static auth_ptr deserialize(std::string const& ser_cmd);
         static auth_ptr deserializeUnpacked(std::string& ser_cmd);
 
-
-        ~Authorization() = default;
     protected:             
     
         Authorization(std::string const& endpoint) noexcept

@@ -5,11 +5,11 @@
 
 namespace lab5_7 {
     enum AuthorizationType {
-        AuthWithName
+        AuthWithNameEnum
     };
 
     static const std::list<AuthorizationType> authorizationTypeList{
-        AuthWithName
+        AuthWithNameEnum
     };
 };
 

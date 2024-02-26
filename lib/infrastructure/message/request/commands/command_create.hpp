@@ -14,8 +14,8 @@ namespace lab5_7 {
         CommandCreate(uint16_t newNodeId, uint16_t parentId) noexcept
              : newNodeId(newNodeId), parentId(parentId) {}
 
-        virtual CommandType identify() const {
-            return CommandType::Create;
+        virtual CommandType identifyCommand() const {
+            return CommandType::CreateEnum;
         }
 
         static Command::cmd_ptr deserialize(std::string& ser_cmd) {

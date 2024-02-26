@@ -4,5 +4,6 @@
 #include "message.hpp"
 #include "serialization.hpp"
 #include "request/request_module.hpp"
+#include "response/response_module.hpp"
 
 #endif

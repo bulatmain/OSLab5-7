@@ -16,6 +16,7 @@ namespace lab5_7 {
 
         virtual ~Request() = default;
     protected:
+        Request() = default;
 
         virtual void serialize_request(std::string& req_str) const = 0;
 

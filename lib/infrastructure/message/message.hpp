@@ -12,6 +12,7 @@ namespace lab5_7 {
     class Message {
     public:
         using msg_ptr = std::shared_ptr<Message>;
+        using msg_const_ptr = std::shared_ptr<Message const>;
 
         template <typename T, typename... Args>    
         static msg_ptr construct(Args... args) {

@@ -9,18 +9,18 @@ namespace lab5_7 {
     RequestType defineRequestType(std::string& req_str) {
         std::string req_type = extractType(req_str);
         if (req_type == "Command") {
-            return Command;
+            return CommandEnum;
         } else if (req_type == "Authorization") {
-            return Authorization;
+            return AuthorizationEnum;
         } else {            
             throw std::invalid_argument("Error, initiated at defineRequestType(...): can not define request type");
         }
     }
 
     Request::req_ptr deserializeType(RequestType type, std::string& req_str) {
-        if (type == Command) {
+        if (type == CommandEnum) {
             return Command::deserializeUnpacked(req_str);
-        } else if (type == Authorization) {
+        } else if (type == AuthorizationEnum) {
             return Authorization::deserializeUnpacked(req_str);
         } else {
             throw std::invalid_argument("Wtf?");

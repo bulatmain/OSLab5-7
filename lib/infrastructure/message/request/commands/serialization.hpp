@@ -11,13 +11,13 @@ namespace lab5_7 {
     CommandType defineCommandType(std::string& ser_cmd) {
         std::string command_type = extractType(ser_cmd);
         if (command_type == "Create") {
-            return CommandType::Create;
+            return CommandType::CreateEnum;
         } else if (command_type == "Exec") {
-            return CommandType::Exec;
+            return CommandType::ExecEnum;
         } else if (command_type == "PrintTree") {
-            return CommandType::PrintTree;
+            return CommandType::PrintTreeEnum;
         } else if (command_type == "Pass") {
-            return CommandType::Pass;
+            return CommandType::PassEnum;
         } else {
             throw std::invalid_argument("Error, initiated at defineCommandType(...): can not define command type");
         }
@@ -25,13 +25,13 @@ namespace lab5_7 {
 
     Command::cmd_ptr deserializeType(CommandType type, std::string& ser_cmd) {
         switch (type) {
-        case CommandType::Create:
+        case CommandType::CreateEnum:
             return std::move(CommandCreate::deserializeUnpacked(ser_cmd));
-        case CommandType::Exec:
+        case CommandType::ExecEnum:
             return std::move(CommandExec::deserializeUnpacked(ser_cmd));
-        case CommandType::PrintTree:
+        case CommandType::PrintTreeEnum:
                return std::move(CommandPrintTree::deserializeUnpacked(ser_cmd));
-        case CommandType::Pass:
+        case CommandType::PassEnum:
                return std::move(CommandPass::deserializeUnpacked(ser_cmd));
         default:
             throw std::runtime_error("Wtf?");

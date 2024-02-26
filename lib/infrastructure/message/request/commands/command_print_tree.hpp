@@ -8,8 +8,8 @@
 namespace lab5_7 {
     class CommandPrintTree : public Command {
     public:
-        virtual CommandType identify() const {
-            return CommandType::PrintTree;
+        virtual CommandType identifyCommand() const {
+            return CommandType::PrintTreeEnum;
         }
 
         static Command::cmd_ptr deserialize(std::string& ser_cmd) {
