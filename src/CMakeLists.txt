@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(Lab5_7 LANGUAGES CXX)
+project(source LANGUAGES CXX)
 
 add_compile_options(
         -g

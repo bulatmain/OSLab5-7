@@ -3,7 +3,7 @@
 
 #include <infrastructure/connection_wrapper/connection_module.hpp>
 #include "parser/parser.hpp"
-#include "get_ip_func/get_ip_func.hpp"
+#include <aux_network_funcs/get_ip_func/get_ip_func.hpp>
 
 #include <iostream>
 

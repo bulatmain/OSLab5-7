@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(Lab5_7 LANGUAGES CXX)
-
 add_compile_options(
         -g
         -lzmq
@@ -28,16 +26,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(zmq)
-
-add_library(lib INTERFACE)
-
-include_directories(infrastructure aux_network_funcs)
-add_subdirectory(infrastructure)
-add_subdirectory(aux_network_funcs)
-
-target_link_libraries(lib INTERFACE 
-    infrastructure 
-    aux_network_funcs
+add_library(aux_network_funcs STATIC 
+    ./get_ip_func/get_ip_func.hpp
 )
+set_target_properties(aux_network_funcs PROPERTIES LINKER_LANGUAGE CXX)
