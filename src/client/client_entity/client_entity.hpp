@@ -26,7 +26,7 @@ namespace lab5_7 {
         }
 
         static string_ptr readLine() {
-            string_ptr input_ptr;
+            auto input_ptr = std::make_shared<std::string>();
             std::getline(std::cin, *input_ptr);
             return input_ptr;
         }
@@ -96,11 +96,7 @@ namespace lab5_7 {
 
         bool msgIsAuthorizationAcceptedType(Message::msg_ptr msg) {
             auto p = std::dynamic_pointer_cast<AuthorizationAccepted>(msg);
-            if (p) {
-                return true;
-            } else {
-                return false;
-            }
+            return static_cast<bool>(p);
         }
 
         bool badPulledResponce() {
