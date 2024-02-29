@@ -7,6 +7,7 @@
 namespace lab5_7 {
     class AuthorizationWithName : public Authorization {
     public:
+        using auwn_ptr = std::shared_ptr<AuthorizationWithName>;
         std::string const name;
 
     public:
