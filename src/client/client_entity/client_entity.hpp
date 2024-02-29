@@ -36,7 +36,7 @@ namespace lab5_7 {
     protected:
         ClientParser parser;
 
-        std::string const selfEndpoint = *getSelfEndpoint();
+        std::string const selfEndpoint = SelfIPInfo::getSelfEndpoint();
         std::string const clientName;
         PushQueue pusher;
         PullQueue puller;
