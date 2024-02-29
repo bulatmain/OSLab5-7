@@ -8,29 +8,27 @@
 #include <iostream>
 
 namespace lab5_7 {    
-    class Reader {
+    class Reader
+     {
     protected:
         using string_ptr = std::shared_ptr<std::string>;
-        string_ptr input_ptr;
     public:
-        Reader() : input_ptr(std::make_shared<std::string>()) {
-            readLine();
-        }
-        Reader(string_ptr str_ptr) : input_ptr(str_ptr) {
-            readLine();
+        static string_ptr readCommandFromUser() {
+            printInvitingMsg();
+            return readLine();
         }
 
-        void readLine() {
+    protected:
+        Reader() = default;
+
+        static void printInvitingMsg() {
             std::cout << "Please, enter command: ";
+        }
+
+        static string_ptr readLine() {
+            string_ptr input_ptr;
             std::getline(std::cin, *input_ptr);
-        }
-
-        std::string& getInput() {
-            return *input_ptr;
-        }
-
-        ~Reader() {
-            input_ptr->clear();
+            return input_ptr;
         }
     };
 
@@ -111,9 +109,8 @@ namespace lab5_7 {
         }
 
         void run() {
-            auto input = std::make_shared<std::string>();
             while (true) {
-                Reader read(input);
+                auto input = Reader::readCommandFromUser();
                 try {
                     auto cmd = parser.parse(*input);
                     handle(cmd);
