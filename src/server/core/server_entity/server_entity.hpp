@@ -94,7 +94,7 @@ namespace lab5_7 {
             while (keep_running->getValue()) {
                 if (thereIsWhatToHandle()) {
                     auto msg = getEvent();
-                    std::cout << "msg recieved: " << serialize(msg) << std::endl;
+                    std::cout << "<< Msg recieved: " << serialize(msg) << std::endl;
                     handle(msg);
                 } else {
                     passForTime(passingTime);
@@ -133,6 +133,7 @@ namespace lab5_7 {
         }
 
         void authorizeByRequest(AuthorizationWithName::auwn_ptr req) {
+            std::cout << "[] Handled: Authorization\n";
             auto const& endpoint = req->endpoint;
             pusher = std::make_shared<PushQueue>(endpoint);
             pusher->connect();
@@ -142,6 +143,7 @@ namespace lab5_7 {
         }
 
         void redirectToCalcTree(Command::cmd_ptr cmd) {
+            std::cout << "[] Handled: Redirecting to CalcTree\n";
             calcTreeInterface.push(cmd);
         }
 
@@ -150,6 +152,7 @@ namespace lab5_7 {
         }
 
         void redirectToClient(Response::resp_ptr resp) {
+            std::cout << "[] Handled: Redirecting to Client\n";
             pusher->push(resp);
         }
 

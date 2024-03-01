@@ -2,10 +2,8 @@
 
 namespace lab5_7 {
 
-
-
 class CalcTreeInterface {
-public:
+protected:
     using flag_ptr = std::shared_ptr<FlagVO const>;
     using eventsToHandleList = std::shared_ptr<ConcurrentQueue<Message>>;
     using commandRequestQueue = std::shared_ptr<ConcurrentQueue<Command>>;
@@ -14,6 +12,7 @@ public:
     flag_ptr keep_running;
     commandRequestQueue commandQueue;
 
+public:
     CalcTreeInterface(eventsToHandleList eventsList, flag_ptr keep_running)
         :   eventsList(eventsList), 
             keep_running(keep_running),
@@ -22,6 +21,8 @@ public:
     void push(Command::cmd_ptr cmd) {
         commandQueue->push(cmd);
     }
+
+    friend class CalcTree;
 
 };
 
@@ -39,20 +40,20 @@ public:
 
     static ct_ptr makePointer(CalcTreeInterface& ctInterface) {
         return std::make_shared<CalcTree>(
-            ctInterface.eventsList, 
-            ctInterface.keep_running,
+            std::move(ctInterface.eventsList), 
+            std::move(ctInterface.keep_running),
             ctInterface.commandQueue
         );
     }
 
-    CalcTree(eventsToHandleList eventsList, flag_ptr keep_running, commandRequestQueue commandQueue)
-        :   eventsList(eventsList), 
-            keep_running(keep_running),
+    CalcTree(eventsToHandleList&& eventsList, flag_ptr&& keep_running, commandRequestQueue commandQueue)
+        :   eventsList(std::move(eventsList)), 
+            keep_running(std::move(keep_running)),
             commandQueue(commandQueue) {}
 
 
     void launch() {
-        std::cout << "Dummy launched!\n";
+        std::cout << "<> Dummy launched!\n";
         while (keep_running->getValue()) {
             auto cmd = commandQueue->wait_and_pop();
             auto resp = Message::construct<InvalidRequest>();

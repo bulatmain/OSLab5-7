@@ -28,6 +28,7 @@ namespace lab5_7 {
         } 
 
         void launch() {
+            std::cout << "<> Validator launched!\n";
             puller.bind();
             puller.runRecieveThread();
             while (keep_running->getValue()) {

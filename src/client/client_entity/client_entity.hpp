@@ -22,7 +22,7 @@ namespace lab5_7 {
         Reader() = default;
 
         static void printInvitingMsg() {
-            std::cout << "Please, enter command: ";
+            std::cout << ">> Please, enter command: ";
         }
 
         static string_ptr readLine() {
@@ -174,7 +174,7 @@ namespace lab5_7 {
                 try {
                     auto msg = puller.try_pull();
                     // std::string msg_str = unpack_responce(msg);
-                    std::cout << serialize(msg) << std::endl;
+                    std::cout << "<< Message recieved: " << serialize(msg) << std::endl;
                 } catch (...) {}
             }
         }
@@ -185,7 +185,7 @@ namespace lab5_7 {
         }
 
         void printInvalidInputError() {
-            std::cout << "Error: invalid input!\n";
+            std::cout << "!! Error: invalid input!\n";
         }
 
     };
