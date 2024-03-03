@@ -29,10 +29,3 @@ target_include_directories(client PRIVATE
     $<INSTALL_INTERFACE:lib>
 )
 target_link_libraries(client PRIVATE lib)
-
-add_executable(test test.cpp)
-target_include_directories(test PRIVATE 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
-    $<INSTALL_INTERFACE:lib>
-)
-target_link_libraries(test PRIVATE lib)

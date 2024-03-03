@@ -41,5 +41,3 @@ target_link_libraries(infrastructure INTERFACE message)
 target_link_libraries(infrastructure INTERFACE connection_wrapper)
 set_target_properties(infrastructure PROPERTIES LINKER_LANGUAGE CXX)
 
-add_executable(exec test.cpp)
-target_link_libraries(exec PUBLIC infrastructure)

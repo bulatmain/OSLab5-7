@@ -272,6 +272,7 @@ protected:
                 return node->pid;
             }
         }
+        throw std::runtime_error("Error: no node with such id in children");
     }
 
     template <typename T, typename... Args>
