@@ -15,8 +15,8 @@ namespace lab5_7 {
         using delay_ms = std::chrono::milliseconds;
 
         thread_ptr dispatch_thread_ptr;
-        delay_ms request_delay;
         socket_ptr pusher;
+        delay_ms request_delay;
         flag_ptr keep_running = std::make_shared<FlagVO>(false);
 
     public:

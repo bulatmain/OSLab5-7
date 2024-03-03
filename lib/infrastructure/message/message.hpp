@@ -55,6 +55,12 @@ namespace lab5_7 {
         return std::dynamic_pointer_cast<T>(Message::construct<T>(args...));
     }
 
+    template <typename T>
+    bool isTypeMsg(Message::msg_ptr msg) {
+        auto p = std::dynamic_pointer_cast<T>(msg);
+        return static_cast<bool>(p);
+    }
+
 };
 
 #endif

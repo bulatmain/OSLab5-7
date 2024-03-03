@@ -16,8 +16,8 @@ namespace lab5_7 {
         using delay_ms = std::chrono::milliseconds;
 
         thread_ptr recieve_thread_ptr;
-        delay_ms responce_delay;
         socket_ptr puller;
+        delay_ms responce_delay;
         flag_ptr keep_running = std::make_shared<FlagVO>(false);
 
     public:
@@ -44,7 +44,6 @@ namespace lab5_7 {
 
         void bind() {
             puller->bind();
-            
         }
 
         void unbind() {

@@ -14,8 +14,8 @@ namespace lab5_7 {
         using eventsToHandleList = std::shared_ptr<ConcurrentQueue<Message>>;
 
         PullQueue puller;
-        flag_ptr keep_running;
         eventsToHandleList eventsList;
+        flag_ptr keep_running;
         
 
     public:

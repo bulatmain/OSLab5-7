@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(core LANGUAGES CXX)
+project(Server LANGUAGES CXX)
 
 add_compile_options(
         -g
+        -lzmq
         # -Werror   
 
         -Wall
@@ -23,9 +24,8 @@ if(NOT CMAKE_C_EXTENSIONS)
     set(CMAKE_C_EXTENSIONS OFF)
 endif()
 
+include_directories(./core)
+add_subdirectory(./core)
+
 add_executable(server server.cpp)
-target_include_directories(server PRIVATE 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
-    $<INSTALL_INTERFACE:lib>
-)
-target_link_libraries(server PRIVATE lib)
+target_link_libraries(server PRIVATE core)

@@ -1,3 +1,6 @@
+#ifndef GET_IP_FUNC_HPP
+#define GET_IP_FUNC_HPP
+
 #include <iostream>     ///< cout
 #include <cstring>      ///< memset
 #include <errno.h>      ///< errno
@@ -8,19 +11,27 @@
 #include <string>
 
 namespace lab5_7 {
-    std::string const googleDNSServer = "8.8.8.8";
-    int const stdDNSPort = 53;
-
-    using socket_t = int;
+    static std::string const googleDNSServer = "8.8.8.8";
+    static uint16_t const stdDNSPort = 53;
 
     class SelfIPInfo {
     public:
-        static std::string getSelfEndpoint(int port = 5001, std::string const& dnsServer = googleDNSServer, int dnsPort = stdDNSPort) {
+        static int const minGeneratedPort = 6000;
+        static int const maxGeneratedPort = 7000;
+
+        using socket_t = int;
+
+        static std::string generateSelfEndpoint() {
+            auto port = generatePort();
+            return getSelfEndpoint(port);
+        }
+
+        static std::string getSelfEndpoint(int port = 5001, std::string const& dnsServer = googleDNSServer, uint16_t dnsPort = stdDNSPort) {
             std::string selfIP = getSelfIP(dnsServer, dnsPort);
             return "tcp://" + selfIP + ":" + std::to_string(port);
         }
 
-        static std::string getSelfIP(std::string const& dnsServer = googleDNSServer, int dnsPort = stdDNSPort) {
+        static std::string getSelfIP(std::string const& dnsServer = googleDNSServer, uint16_t dnsPort = stdDNSPort) {
             socket_t sock;
             initSocket(sock);
             connectSocketToDNSServer(sock, dnsServer, dnsPort);
@@ -34,9 +45,15 @@ namespace lab5_7 {
             return selfIP;
         }
 
-
     protected:
         SelfIPInfo() = default;
+
+        static int generatePort() {
+            srand((unsigned)time(NULL));
+            int portRange = maxGeneratedPort - minGeneratedPort + 1;
+            int port = minGeneratedPort + (rand() + 1) % portRange;
+            return port;
+        }
 
         inline static void printErrorMessage() { \
             std::cout << "Error number: " << errno \
@@ -50,7 +67,7 @@ namespace lab5_7 {
             }
         }
 
-        static void connectSocketToDNSServer(socket_t& sock, std::string const& dnsServer, int dnsPort) {
+        static void connectSocketToDNSServer(socket_t& sock, std::string const& dnsServer, uint16_t dnsPort) {
             sockaddr_in serv;
             memset(&serv, 0, sizeof(serv));
             serv.sin_family = AF_INET;
@@ -93,6 +110,6 @@ namespace lab5_7 {
 
 
 
-
+#endif
 
 

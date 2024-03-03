@@ -6,6 +6,11 @@
 using namespace lab5_7;
 
 int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cout << "Error: invalid arguments!\n";
+        exit(-1);
+    }
+
     std::string serverEndpoint(argv[1]);
 
     Client client(serverEndpoint, "bulat");

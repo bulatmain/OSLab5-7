@@ -74,6 +74,18 @@ namespace lab5_7 {
             waitTillAuthAccepted();
         }
 
+        void run() {
+            while (true) {
+                auto input = Reader::readCommandFromUser();
+                try {
+                    auto cmd = parser.parse(*input);
+                    handle(cmd);
+                } catch (...) {
+                    printInvalidInputError();
+                }
+            }
+        }
+
         void pushAuthMessage() {
             auto auth_msg = constructMessageType<AuthorizationWithName>(selfEndpoint, clientName);
             pushRequestToQueue(auth_msg);
@@ -87,16 +99,96 @@ namespace lab5_7 {
             } while (badPulledResponce());
         }
 
-        void waitTillPullerIsNotEmpty(std::size_t& seconds_left) {
-            while (puller.empty()) {
-                std::this_thread::sleep_for(1s);
-                std::cout << std::to_string(++seconds_left) + " seconds..." << std::endl;
+        void handle(Command::cmd_ptr cmd) {
+            if (isAssignedToThis(cmd)) {
+                handleThere(cmd);
+            } else {
+                pushRequestToQueue(cmd);
+                waitAndPullRespFromQueue();
             }
         }
 
-        bool msgIsAuthorizationAcceptedType(Message::msg_ptr msg) {
-            auto p = std::dynamic_pointer_cast<AuthorizationAccepted>(msg);
-            return static_cast<bool>(p);
+        void printPullQueueMsgIfNotEmpty() {
+            if (isThereActualResponse()) {
+                waitAndPullRespFromQueue();
+            }
+        }
+
+        void waitAndPullRespFromQueue() {
+            try {
+                auto msg = puller.pull();
+                std::string msg_str = formAnswerToUser(msg);
+                std::cout << msg_str << std::endl;
+            } catch (...) {}
+        }
+
+        std::string formAnswerToUser(Message::msg_ptr resp) {
+            if (isTypeMsg<InvalidRequest>(resp)) {
+                return formAnswerToUserForInvalidRequest(std::dynamic_pointer_cast<InvalidRequest>(resp));
+            } else if (isTypeMsg<BadExecResp>(resp)) {
+                return formAnswerToUserForBadExecResp(std::dynamic_pointer_cast<BadExecResp>(resp));
+            } else if (isTypeMsg<GoodExecResp>(resp)) {
+                return formAnswerToUserForGoodExecResp(std::dynamic_pointer_cast<GoodExecResp>(resp));
+            } else if (isTypeMsg<BadCreateResp>(resp)) {
+                return formAnswerToUserForBadCreateResp(std::dynamic_pointer_cast<BadCreateResp>(resp));
+            } else if (isTypeMsg<GoodCreateResp>(resp)) {
+                return formAnswerToUserForGoodCreateResp(std::dynamic_pointer_cast<GoodCreateResp>(resp));
+            } else if (isTypeMsg<NodeExistResponse>(resp)) {
+                return formAnswerToUserForNodeExistResponse(std::dynamic_pointer_cast<NodeExistResponse>(resp));
+            } else if (isTypeMsg<NodeIsDeadResponse>(resp)) {
+                return formAnswerToUserForNodeIsDeadResponse(std::dynamic_pointer_cast<NodeIsDeadResponse>(resp));
+            } 
+            throw std::runtime_error("Error: can not cast Response to answer!");
+        }
+
+        std::string formAnswerToUserForInvalidRequest(std::shared_ptr<InvalidRequest>) {
+            return "Error: invalid request";
+        }
+
+        std::string formAnswerToUserForBadExecResp(std::shared_ptr<BadExecResp> resp) {
+            auto id = resp->id;
+            return "Error: " + std::to_string(id) + " node is manager, unavailable or not created";
+        }
+
+        std::string formAnswerToUserForGoodExecResp(std::shared_ptr<GoodExecResp> resp) {
+            auto id = resp->id;
+            auto sum = resp->sum;
+            return "Ok:" + std::to_string(id) + ": " + std::to_string(sum);
+        }
+
+        std::string formAnswerToUserForBadCreateResp(std::shared_ptr<BadCreateResp> resp) {
+            auto id = resp->newNodeId;
+            return "Error: unable to create" + std::to_string(id) + " node";
+        }
+
+        std::string formAnswerToUserForGoodCreateResp(std::shared_ptr<GoodCreateResp> resp) {
+            auto pid = resp->pid;
+            return "Ok: " + std::to_string(pid);
+        }
+
+        std::string formAnswerToUserForNodeExistResponse(std::shared_ptr<NodeExistResponse> resp) {
+            auto id = resp->id;
+            return "Error: node" + std::to_string(id) + " already exist";
+        }
+
+        std::string formAnswerToUserForNodeIsDeadResponse(std::shared_ptr<NodeIsDeadResponse> resp) {
+            auto id = resp->id;
+            return "Heartbeat: node " + std::to_string(id) + " is unavailable now";
+        }
+
+        void printInvalidInputError() {
+            std::cout << "!! Error: invalid input!\n";
+        }
+
+        void pushRequestToQueue(Request::req_ptr req) {
+            pusher.push(req);
+        }
+
+        void waitTillPullerIsNotEmpty(std::size_t& seconds_left) {
+            while (!isThereActualResponse()) {
+                std::this_thread::sleep_for(1s);
+                std::cout << std::to_string(++seconds_left) + " seconds..." << std::endl;
+            }
         }
 
         bool badPulledResponce() {
@@ -104,31 +196,8 @@ namespace lab5_7 {
             return !msgIsAuthorizationAcceptedType(msg);
         }
 
-        void run() {
-            while (true) {
-                auto input = Reader::readCommandFromUser();
-                try {
-                    auto cmd = parser.parse(*input);
-                    handle(cmd);
-                    if (isThereActualRespone()) {
-                        printPullQueueMsgIfNotEmpty();
-                    }
-                } catch (...) {
-                    printInvalidInputError();
-                }
-            }
-        }
-
-        void handle(Command::cmd_ptr cmd) {
-            if (isAssignedToThis(cmd)) {
-                handleThere(cmd);
-            } else {
-                pushRequestToQueue(cmd);
-            }
-        }
-
-        bool isThereActualRespone() {
-            return !puller.empty();
+        bool isAssignedToThis(Command::cmd_ptr cmd) {
+            return listHasElement(clientSideCommandTypeList, cmd->identifyCommand());
         }
 
         void handleThere(Command::cmd_ptr cmd) {
@@ -140,12 +209,18 @@ namespace lab5_7 {
             }
         }
 
-        bool isAssignedToThis(Command::cmd_ptr cmd) {
-            return listHasElement(clientSideCommandTypeList, cmd->identifyCommand());
+        bool isThereActualResponse() {
+            return !puller.empty();
         }
-        
-        void pushRequestToQueue(Request::req_ptr req) {
-            pusher.push(req);
+
+        bool msgIsAuthorizationAcceptedType(Message::msg_ptr msg) {
+            auto p = std::dynamic_pointer_cast<AuthorizationAccepted>(msg);
+            return static_cast<bool>(p);
+        }
+
+        template <typename T>
+        bool listHasElement(std::list<T> const& l, T const& v) {
+            return std::find(l.begin(), l.end(), v) != l.end();
         }
 
         void pass(Command::cmd_ptr cmd) {
@@ -167,25 +242,6 @@ namespace lab5_7 {
             std::chrono::duration<double> timeHasPassed{currentTime - timeBegin};
             std::chrono::microseconds timeHasPassedInMs = std::chrono::duration_cast<ms>(timeHasPassed);        
             return timeHasPassedInMs <= durationInMs;
-        }
-
-        void printPullQueueMsgIfNotEmpty() {
-            if (!puller.empty()) {
-                try {
-                    auto msg = puller.try_pull();
-                    // std::string msg_str = unpack_responce(msg);
-                    std::cout << "<< Message recieved: " << serialize(msg) << std::endl;
-                } catch (...) {}
-            }
-        }
-
-        template <typename T>
-        bool listHasElement(std::list<T> const& l, T const& v) {
-            return std::find(l.begin(), l.end(), v) != l.end();
-        }
-
-        void printInvalidInputError() {
-            std::cout << "!! Error: invalid input!\n";
         }
 
     };

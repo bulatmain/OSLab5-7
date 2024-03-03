@@ -17,7 +17,7 @@ namespace lab5_7 {
 
     template <typename T>
     void add_first_class_variable(std::string& msg_str, T const& var) {
-        msg_str += "{" + std::to_string(var);
+        msg_str += std::to_string(var);
     }
     void add_first_class_variable(std::string& msg_str, std::string const& var) {
         msg_str += var;

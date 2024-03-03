@@ -7,13 +7,25 @@ namespace lab5_7 {
     enum ResponseType {
         AuthorizationResponseEnum,
         InvalidRequestEnum,
-        CommandResponceEnum
+        BadCreateRespEnum,
+        GoodCreateRespEnum,
+        BadExecRespEnum,
+        GoodExecRespEnum,
+        NodeExistResponseEnum,
+        NodeIsDeadResponseEnum,
+        HeartbeatEnum
     };
 
     static const std::list<ResponseType> responceTypeList{
         AuthorizationResponseEnum,
         InvalidRequestEnum,
-        CommandResponceEnum
+        BadCreateRespEnum,
+        GoodCreateRespEnum,
+        BadExecRespEnum,
+        GoodExecRespEnum,
+        NodeExistResponseEnum,
+        NodeIsDeadResponseEnum,
+        HeartbeatEnum
     };
 };
 

@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(Core LANGUAGES CXX)
+project(CalcTree LANGUAGES CXX)
 
 add_compile_options(
         -g
-        -lzmq
         # -Werror   
 
         -Wall
@@ -28,20 +27,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(core STATIC server_entity/server_entity.hpp)
-set_target_properties(core PROPERTIES LINKER_LANGUAGE CXX)
-target_include_directories(core PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
-    $<INSTALL_INTERFACE:lib>
-)
-target_link_libraries(core PUBLIC lib)
-target_link_libraries(core PUBLIC zmq)
+# add_library(calc_tree STATIC server_entity/server_entity.hpp)
+# set_target_properties(calc_tree PROPERTIES LINKER_LANGUAGE CXX)
+# target_include_directories(calc_tree PUBLIC 
+#     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/lib>
+#     $<INSTALL_INTERFACE:lib>
+# )
+# target_link_libraries(calc_tree PUBLIC lib)
 
-add_executable(calc_tree_node calc_tree_node_main.cpp)
-target_link_libraries(calc_tree_node PRIVATE core)
-
-# target_include_directories(core PUBLIC
+# target_include_directories(calc_tree PUBLIC
 #     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/server/calc_tree>
 #     $<INSTALL_INTERFACE:calc_tree>
 # )
-# target_link_libraries(core PUBLIC calc_tree)
+# target_link_libraries(calc_tree PUBLIC calc_tree)

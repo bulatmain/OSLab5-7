@@ -4,6 +4,7 @@
 #include "message.hpp"
 #include "request/request.hpp"
 #include "response/response.hpp"
+#include "calc_tree_msgs/calc_tree_msgs_module.hpp"
 
 namespace lab5_7 {
     MessageType defineMessageType(std::string& msg_str) {
@@ -12,6 +13,8 @@ namespace lab5_7 {
             return RequestEnum;
         } else if (msg_type == "Response") {
             return ResponseEnum;
+        }else if (msg_type == "KillSignal") {
+            return KillSignalEnum;
         } else {            
             throw std::invalid_argument("Error, initiated at defineMessageType(...): can not define Message type");
         }
@@ -22,6 +25,8 @@ namespace lab5_7 {
             return Request::deserializeUnpacked(msg_str);
         } else if (type == ResponseEnum) {
             return Response::deserializeUnpacked(msg_str);
+        } else if (type == KillSignalEnum) {
+            return KillSignal::deserializeUnpacked(msg_str);
         } else {
             throw std::invalid_argument("Wtf?");
         }

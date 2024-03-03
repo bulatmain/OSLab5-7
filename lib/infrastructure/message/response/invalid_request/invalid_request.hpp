@@ -28,13 +28,13 @@ namespace lab5_7 {
         }
 
     protected:
-        virtual void serialize_response(std::string& auth_str) const override final {
-            add_invalid_request_header(auth_str);
-            complete_serialization(auth_str);
+        virtual void serialize_response(std::string& ireq_ser) const override final {
+            add_invalid_request_header(ireq_ser);
+            complete_serialization(ireq_ser);
         }
 
-        void add_invalid_request_header(std::string& auth_str) const {
-            auth_str += "InvalidRequest{";
+        void add_invalid_request_header(std::string& ireq_ser) const {
+            ireq_ser += "InvalidRequest{";
         }
 
     };

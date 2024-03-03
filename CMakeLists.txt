@@ -24,6 +24,9 @@ if(NOT CMAKE_C_EXTENSIONS)
     set(CMAKE_C_EXTENSIONS OFF)
 endif()
 
+set (CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(zmq)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -31,4 +34,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 include_directories(lib)
 add_subdirectory(lib)
 
+include_directories(src)
 add_subdirectory(src)

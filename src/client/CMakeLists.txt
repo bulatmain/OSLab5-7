@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(client LANGUAGES CXX)
+project(Client LANGUAGES CXX)
 
 add_compile_options(
         -g

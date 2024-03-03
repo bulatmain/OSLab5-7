@@ -35,13 +35,13 @@ namespace lab5_7 {
         
 
     public:
-        Server(int listeningPort = 5000, duration_ms passingTime = 1000ms)
+        Server(int listeningPort = 5000, duration_ms passingTime = 1000ms, duration_ms heartbeatPeriod = 1000ms)
             :   listeningPort(listeningPort), 
                 selfEndpoint(SelfIPInfo::getSelfEndpoint(listeningPort)), 
                 keep_running(std::make_shared<FlagVO>(false)),
                 passingTime(passingTime),
                 eventsList(std::make_shared<ConcurrentQueue<Message>>()),
-                calcTreeInterface(eventsList, keep_running) {
+                calcTreeInterface(eventsList, keep_running, heartbeatPeriod) {
             
             std::cout << "Self endpoint is: " << selfEndpoint << std::endl;
         }
@@ -118,12 +118,6 @@ namespace lab5_7 {
             }
         }
 
-        template <typename T>
-        bool isTypeMsg(Message::msg_ptr msg) {
-            auto p = std::dynamic_pointer_cast<T>(msg);
-            return static_cast<bool>(p);
-        }
-
         void handleRequest(Request::req_ptr req) {
             if (isTypeMsg<AuthorizationWithName>(req)) {
                 authorizeByRequest(std::dynamic_pointer_cast<AuthorizationWithName>(req));
@@ -138,8 +132,8 @@ namespace lab5_7 {
             pusher = std::make_shared<PushQueue>(endpoint);
             pusher->connect();
             pusher->runDispatchThread();
-            auto succesfullAuthorization = Message::construct<AuthorizationAccepted>();
-            pusher->push(succesfullAuthorization);
+            auto succesfullAuthorization = constructMessageType<AuthorizationAccepted>();
+            redirectToClient(succesfullAuthorization);
         }
 
         void redirectToCalcTree(Command::cmd_ptr cmd) {

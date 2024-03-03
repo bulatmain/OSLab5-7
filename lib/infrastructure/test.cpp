@@ -3,9 +3,17 @@
 
 using namespace lab5_7;
 
-
 int main() {
-    using namespace std::literals::chrono_literals;
-    
+    auto time = std::chrono::system_clock::now();
+    auto msg = Message::construct<Heartbeat>(1, time);
+
+    auto ser_cmd = serialize(msg);
+
+    std::cout << ser_cmd << "\n";
+
+    auto _msg = Message::deserialize(ser_cmd);
+
+    std::cout << serialize(_msg) << "\n";
+
     return 0;
 }
