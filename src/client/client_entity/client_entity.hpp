@@ -168,7 +168,7 @@ namespace lab5_7 {
 
         std::string formAnswerToUserForNodeExistResponse(std::shared_ptr<NodeExistResponse> resp) {
             auto id = resp->id;
-            return "Error: node" + std::to_string(id) + " already exist";
+            return "Error: node " + std::to_string(id) + " already exist";
         }
 
         std::string formAnswerToUserForNodeIsDeadResponse(std::shared_ptr<NodeIsDeadResponse> resp) {

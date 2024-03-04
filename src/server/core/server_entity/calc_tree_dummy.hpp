@@ -305,6 +305,7 @@ protected:
     template <typename T, typename... Args>
     void pushMessage(Args... args) {
         auto msg = Message::construct<T>(args...);
+        std::cout << "Message pushed to ancestor: " << serialize(msg) << "\n";
         redirectToAncestor(msg);
     }
 
