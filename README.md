@@ -1,0 +1,1 @@
+This project is made as part of laboratory work of the "Operating Systems" course. The essense of the work is to develop application that allows to work with calculation node tree. I made a decision to split application to client, server and calculation tree service. All is built on event-oriented paradigm. As IPC I used ZeroMQ message queue framework. 
